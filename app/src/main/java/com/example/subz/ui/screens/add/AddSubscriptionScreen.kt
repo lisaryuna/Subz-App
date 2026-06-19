@@ -13,6 +13,7 @@ import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.viewmodel.HomeViewModel
 import java.text.SimpleDateFormat
 
@@ -31,7 +32,11 @@ fun AddSubscriptionScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = {Text("New Subscriptions")})
+            SubzTopAppBar(
+                title = "New Subscription",
+                canNavigateBack = true,
+                navigateUp = onNavigateBack
+            )
         }
     ) { innerPadding ->
         Column(
