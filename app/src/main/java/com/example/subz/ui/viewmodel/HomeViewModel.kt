@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.data.local.entity.SubscriptionEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -55,5 +56,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             subscriptionDao.deleteSubscription(subscriptionEntity)
         }
+    }
+
+    fun getSubscriptionById(id: Int): Flow<SubscriptionEntity?> {
+        return subscriptionDao.getSubscriptionById(id)
     }
 }

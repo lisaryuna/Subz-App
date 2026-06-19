@@ -25,4 +25,7 @@ interface SubscriptionDao {
 
     @Query("SELECT SUM(price) FROM subscriptions")
     fun getTotalActiveSubscriptions(): Flow<Double?>
+
+    @Query("SELECT * FROM subscriptions WHERE id = :id")
+    fun getSubscriptionById(id: Int): Flow<SubscriptionEntity?>
 }
