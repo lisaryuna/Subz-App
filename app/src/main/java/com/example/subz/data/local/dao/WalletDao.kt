@@ -11,10 +11,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WalletDao {
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    suspend fun insertWallet(wallet: WalletEntity)
+    fun insertWallet(wallet: WalletEntity)
 
     @Delete
-    suspend fun deleteWallet(wallet: WalletEntity)
+    fun deleteWallet(wallet: WalletEntity)
 
     @Query("SELECT * FROM wallets ORDER BY name ASC")
     fun getAllWallets(): Flow<List<WalletEntity>>

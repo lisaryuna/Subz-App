@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SubscriptionDao {
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    suspend fun insertSubscription(subscription: SubscriptionEntity)
+    fun insertSubscription(subscription: SubscriptionEntity)
 
     @Update
-    suspend fun updateSubscription(subscription: SubscriptionEntity)
+    fun updateSubscription(subscription: SubscriptionEntity)
 
     @Delete
-    suspend fun deleteSubscription(subscription: SubscriptionEntity)
+    fun deleteSubscription(subscription: SubscriptionEntity)
 
     @Query("SELECT * FROM subscriptions ORDER BY renewalDate ASC")
     fun getAllSubscriptions(): Flow<List<SubscriptionEntity>>
