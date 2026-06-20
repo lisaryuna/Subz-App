@@ -1,4 +1,4 @@
-package com.example.subz.ui.screens.add
+package com.example.subz.ui.screens.manage
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,14 +15,24 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.viewmodel.HomeViewModel
+import kotlinx.coroutines.flow.flowOf
 import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddSubscriptionScreen(
+fun AddEditSubscriptionScreen(
+    subscriptionId: Int? = null,
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
+    val subscriptionToEdit by remember(subscriptionId) {
+        if (subscriptionId != null) {
+            viewModel.getSubscriptionById(subscriptionId)
+        } else {
+            flowOf(null)
+        }
+    }.collectAsState(initial = null)
+
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var renewalDate by remember { mutableStateOf("") }
@@ -30,10 +40,23 @@ fun AddSubscriptionScreen(
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
+    LaunchedEffect(subscriptionToEdit) {
+        subscriptionToEdit?.let { sub ->
+            name = sub.name
+            price = if (sub.price % 1.0 == 0.0) sub.price.toInt().toString() else sub.price.toString()
+            renewalDate = sub.renewalDate
+            paymentMethod = sub.paymentMethod
+        }
+    }
+
+    val isEditMode = subscriptionId != null
+    val pageTitle = if (isEditMode) "Edit Subscription" else "New Subscription"
+    val buttonText = if (isEditMode) "Update Changes" else "Save Subscription"
+
     Scaffold(
         topBar = {
             SubzTopAppBar(
-                title = "New Subscription",
+                title = pageTitle,
                 canNavigateBack = true,
                 navigateUp = onNavigateBack
             )
@@ -110,18 +133,29 @@ fun AddSubscriptionScreen(
             Button(
                 onClick = {
                     if (name.isNotBlank() && price.isNotBlank()) {
-                        viewModel.addSubscription(
-                            name = name,
-                            price = price.toDoubleOrNull() ?: 0.0,
-                            renewalDate = renewalDate,
-                            paymentMethod = paymentMethod
-                        )
+                        if (isEditMode && subscriptionToEdit != null) {
+                            viewModel.updateSubscription(
+                                subscriptionToEdit!!.copy(
+                                    name = name,
+                                    price = price.toDoubleOrNull() ?: 0.0,
+                                    renewalDate = renewalDate,
+                                    paymentMethod = paymentMethod
+                                )
+                            )
+                        } else {
+                            viewModel.addSubscription(
+                                name = name,
+                                price = price.toDoubleOrNull() ?: 0.0,
+                                renewalDate = renewalDate,
+                                paymentMethod = paymentMethod
+                            )
+                        }
                         onNavigateBack()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Save Subscription")
+                Text(buttonText)
             }
         }
     }
