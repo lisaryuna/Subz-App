@@ -16,6 +16,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.AuthButton
 import com.example.subz.ui.components.AuthFooter
 import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzPasswordField
@@ -90,21 +91,11 @@ fun RegisterScreen(
             )
         }
 
-        Button(
-            onClick = { viewModel.register(fullName, email, password) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue),
-            enabled = authState !is AuthState.Loading
-        ) {
-            if (authState is AuthState.Loading) {
-                CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-            } else {
-                Text("Register", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-            }
-        }
+        AuthButton(
+            text = "Register",
+            isLoading = authState is AuthState.Loading,
+            onClick = { viewModel.register(fullName, email, password) }
+        )
         Spacer(modifier = Modifier.height(24.dp))
 
         AuthFooter(
