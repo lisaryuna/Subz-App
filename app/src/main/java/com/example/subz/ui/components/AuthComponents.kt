@@ -2,6 +2,10 @@ package com.example.subz.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,6 +47,29 @@ fun AuthHeader(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(bottom = 32.dp)
         )
+    }
+}
+
+@Composable
+fun AuthButton(
+    text: String,
+    isLoading: Boolean,
+    onClick: () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue),
+        enabled = !isLoading
+    ) {
+        if (isLoading) {
+            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+        } else {
+            Text(text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        }
     }
 }
 
