@@ -2,19 +2,33 @@ package com.example.subz.ui.screens.manage
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.data.local.entity.SubscriptionEntity
+import com.example.subz.data.local.entity.WalletEntity
 import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.theme.PrimaryBlue
+import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
+import com.example.subz.ui.viewmodel.WalletViewModel
 import kotlinx.coroutines.flow.flowOf
 import java.text.SimpleDateFormat
 
@@ -23,27 +37,34 @@ import java.text.SimpleDateFormat
 fun AddEditSubscriptionScreen(
     subscriptionId: Int? = null,
     viewModel: HomeViewModel = hiltViewModel(),
+    walletViewModel: WalletViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit
 ) {
     val subscriptionToEdit by remember(subscriptionId) {
         if (subscriptionId != null) {
             viewModel.getSubscriptionById(subscriptionId)
         } else {
-            flowOf(null)
+            flowOf<SubscriptionEntity?>(null)
         }
     }.collectAsState(initial = null)
 
+    val wallets by walletViewModel.wallets.collectAsState()
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var renewalDate by remember { mutableStateOf("") }
     var paymentMethod by remember { mutableStateOf("") }
+
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
+    var showWalletSelector by remember { mutableStateOf(false) }
+    var showAddWalletDialog by remember { mutableStateOf(false) }
+    var newWalletName by remember { mutableStateOf("") }
 
     LaunchedEffect(subscriptionToEdit) {
         subscriptionToEdit?.let { sub ->
             name = sub.name
-            price = if (sub.price % 1.0 == 0.0) sub.price.toInt().toString() else sub.price.toString()
+            price =
+                if (sub.price % 1.0 == 0.0) sub.price.toInt().toString() else sub.price.toString()
             renewalDate = sub.renewalDate
             paymentMethod = sub.paymentMethod
         }
@@ -71,15 +92,15 @@ fun AddEditSubscriptionScreen(
         ) {
             OutlinedTextField(
                 value = name,
-                onValueChange = { name = it},
-                label = { Text("Service name")},
+                onValueChange = { name = it },
+                label = { Text("Service name") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = price,
                 onValueChange = { price = it },
-                label = { Text("Price (Rp)")},
+                label = { Text("Price (Rp)") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -87,10 +108,10 @@ fun AddEditSubscriptionScreen(
             OutlinedTextField(
                 value = renewalDate,
                 onValueChange = { },
-                label = { Text("Renewal / Trial End")},
+                label = { Text("Renewal / Trial End") },
                 readOnly = true,
                 trailingIcon = {
-                    IconButton(onClick = { showDatePicker = true}) {
+                    IconButton(onClick = { showDatePicker = true }) {
                         Icon(
                             imageVector = Icons.Default.DateRange,
                             contentDescription = "Select Date"
@@ -99,34 +120,25 @@ fun AddEditSubscriptionScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { showDatePicker = true}
+                    .clickable { showDatePicker = true }
             )
-
-            if (showDatePicker) {
-                DatePickerDialog(
-                    onDismissRequest = { showDatePicker = false },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            datePickerState.selectedDateMillis?.let { millis ->
-                                val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                                renewalDate = formatter.format(Date(millis))
-                            }
-                            showDatePicker = false
-                        }) { Text("OK")}
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {showDatePicker = false }) { Text("Cancel") }
-                    }
-                ) {
-                    DatePicker(state = datePickerState)
-                }
-            }
 
             OutlinedTextField(
                 value = paymentMethod,
-                onValueChange = { paymentMethod = it },
-                label = { Text("Payment Method")},
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = { },
+                label = { Text("Payment Method") },
+                readOnly = true,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showWalletSelector = true },
+                trailingIcon = {
+                    IconButton(onClick = { showWalletSelector = true }) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "Select Wallet"
+                        )
+                    }
+                }
             )
             Spacer(modifier = Modifier.weight(1f))
 
@@ -156,6 +168,165 @@ fun AddEditSubscriptionScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(buttonText)
+            }
+        }
+
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                            renewalDate = formatter.format(Date(millis))
+                        }
+                        showDatePicker = false
+                    }) { Text("OK") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+
+        if (showWalletSelector) {
+            WalletSelectorSheet(
+                wallets = wallets,
+                onDismiss = { showWalletSelector = false },
+                onWalletSelected = { selected ->
+                    paymentMethod = selected
+                    showWalletSelector = false
+                },
+                onDeleteWallet = { walletViewModel.deleteWallet(it) },
+                onAddNewClick = {
+                    showWalletSelector = false
+                    showAddWalletDialog = true
+                }
+            )
+        }
+
+        if (showAddWalletDialog) {
+            AddWalletSheet(
+                onDismiss = { showAddWalletDialog = false },
+                onSave = { newName ->
+                    walletViewModel.addWallet(newName)
+                    showAddWalletDialog = false
+                    showWalletSelector = true
+                }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WalletSelectorSheet(
+    wallets: List<WalletEntity>,
+    onDismiss: () -> Unit,
+    onWalletSelected: (String) -> Unit,
+    onDeleteWallet: (WalletEntity) -> Unit,
+    onAddNewClick: () -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp, start = 16.dp, end = 16.dp, top = 8.dp)
+        ) { Text(
+            text = "Select Payment Method",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = PrimaryBlue,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+            if (wallets.isEmpty()) {
+                Text("No wallets added yet.", color = Color.Gray, modifier = Modifier.padding(vertical = 16.dp))
+            } else {
+                LazyColumn {
+                    items(wallets) { wallet ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onWalletSelected(wallet.name) }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = wallet.name, fontSize = 16.sp, color = TextDarkNavy)
+                            IconButton(
+                                onClick = { onDeleteWallet(wallet) },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", tint = Color.Gray)
+                            }
+                        }
+                        HorizontalDivider(color = Color.LightGray.copy(alpha = 0.3f))
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(
+                onClick = onAddNewClick,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("+ Add New Wallet", color = PrimaryBlue)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AddWalletSheet(
+    onDismiss: () -> Unit,
+    onSave: (String) -> Unit) {
+    var newWalletName by remember { mutableStateOf("") }
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        containerColor = Color.White
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp, start = 16.dp, end = 16.dp, top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Add New Wallet",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = PrimaryBlue
+            )
+            OutlinedTextField(
+                value = newWalletName,
+                onValueChange = { newWalletName = it },
+                label = { Text("Wallet Name") },
+                placeholder = { Text("e.g., Jenius, Jago") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(onClick = onDismiss) {
+                    Text("Cancel", color = TextDarkNavy)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { if (newWalletName.isNotBlank()) onSave(newWalletName) },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                ) {
+                    Text("Save")
+                }
             }
         }
     }
