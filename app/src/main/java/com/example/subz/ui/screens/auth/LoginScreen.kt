@@ -13,9 +13,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.subz.ui.components.AuthButton
 import com.example.subz.ui.components.AuthFooter
 import com.example.subz.ui.components.AuthHeader
+import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzPasswordField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.viewmodel.AuthState
@@ -77,7 +77,7 @@ fun LoginScreen(
             )
         }
 
-        AuthButton(
+        SubzButton(
             text = "Login",
             isLoading = authState is AuthState.Loading,
             onClick = { viewModel.login(email, password) }
