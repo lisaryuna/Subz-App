@@ -1,6 +1,7 @@
 package com.example.subz.ui.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -32,7 +33,8 @@ import java.util.Locale
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToDetail: (Int) -> Unit
 ) {
     val subscriptions by viewModel.subscriptions.collectAsState()
     val totalActivePrice by viewModel.totalActivePrice.collectAsState()
@@ -133,7 +135,10 @@ fun HomeScreen(
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
                     items(subscriptions) { sub ->
-                        SubscriptionItem(sub = sub)
+                        SubscriptionItem(
+                            sub = sub,
+                            onClick = { onNavigateToDetail(sub.id) }
+                            )
                     }
                 }
             }
@@ -142,9 +147,13 @@ fun HomeScreen(
 }
 
 @Composable
-fun SubscriptionItem(sub: SubscriptionEntity) {
+fun SubscriptionItem(
+    sub: SubscriptionEntity,
+    onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)

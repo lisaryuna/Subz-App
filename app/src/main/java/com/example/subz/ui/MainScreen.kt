@@ -79,7 +79,13 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
                     }
                 )
             }
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    onNavigateToDetail = { subId ->
+                        navController.navigate(Screen.DetailSubscription.createRoute(subId))
+                    }
+                )
+            }
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Profile.route) {
                 ProfileScreen(
