@@ -1,6 +1,5 @@
 package com.example.subz.ui.screens.auth
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -17,10 +16,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.AuthFooter
+import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzPasswordField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.theme.PrimaryBlue
-import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.AuthState
 import com.example.subz.ui.viewmodel.AuthViewModel
 
@@ -49,26 +49,9 @@ fun RegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Subz",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = PrimaryBlue,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-        Text(
-            text = "Create Account",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = TextDarkNavy
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Join Subz to start managing your\nsubscriptions.",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            modifier = Modifier.padding(bottom = 32.dp)
+        AuthHeader(
+            title = "Create Account",
+            subtitle = "Join Subz to start managing your\nsubscriptions."
         )
 
         SubzTextField(
@@ -124,15 +107,10 @@ fun RegisterScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Already have an account? ", color = Color.Gray, fontSize = 14.sp)
-            Text(
-                text = "Sign In",
-                color = PrimaryBlue,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToLogin() }
-            )
-        }
+        AuthFooter(
+            questionText = "Already have an account? ",
+            actionText = "Log In",
+            onActionClick = onNavigateToLogin
+        )
     }
 }

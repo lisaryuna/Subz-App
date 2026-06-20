@@ -13,14 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.AuthFooter
+import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzPasswordField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.theme.PrimaryBlue
-import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.AuthState
 import com.example.subz.ui.viewmodel.AuthViewModel
 
@@ -37,7 +37,7 @@ fun LoginScreen(
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
             viewModel.resetState()
-            onNavigateToHome
+            onNavigateToHome()
         }
     }
 
@@ -48,27 +48,9 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Subz",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
-            color = PrimaryBlue,
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
-
-        Text(
-            text = "Log In",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
-            color = TextDarkNavy
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Welcome back! Enter your details to access\nyour account.",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 32.dp)
+        AuthHeader(
+            title = "Log In",
+            subtitle = "Welcome back! Enter your details to access\nyour account."
         )
 
         SubzTextField(
@@ -115,15 +97,10 @@ fun LoginScreen(
         }
         Spacer(modifier = Modifier.height(24.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "New to Subz? ", color = Color.Gray, fontSize = 14.sp)
-            Text(
-                text = "Create an account",
-                color = PrimaryBlue,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.clickable { onNavigateToRegister() }
-            )
-        }
+        AuthFooter(
+            questionText = "New to Subz? ",
+            actionText = "Create an account",
+            onActionClick = onNavigateToRegister
+        )
     }
 }
