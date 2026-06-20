@@ -22,14 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.data.local.entity.SubscriptionEntity
+import com.example.subz.ui.components.SubscriptionItem
 import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.components.formatRupiah
 import com.example.subz.ui.theme.BackgroundLight
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -143,100 +143,5 @@ fun HomeScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun SubscriptionItem(
-    sub: SubscriptionEntity,
-    onClick: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(getServiceColor(sub.name), shape = RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = sub.name.take(1).uppercase(),
-                    color = Color.White,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = sub.name,
-                    color = TextDarkNavy,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = sub.paymentMethod,
-                    color = Color.Gray,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
-            }
-
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = formatRupiah(sub.price),
-                    color = PrimaryBlue,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.DateRange,
-                        contentDescription = "Date",
-                        tint = Color.Gray,
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = sub.renewalDate,
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-        }
-    }
-}
-
-fun formatRupiah(amount: Double): String {
-    val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
-    return "Rp ${format.format(amount)}"
-}
-
-fun getServiceColor(name: String): Color {
-    val lowerName = name.lowercase()
-    return when {
-        lowerName.contains("netflix") -> Color(0xFFE50914)
-        lowerName.contains("spotify") -> Color(0xFF1DB954)
-        lowerName.contains("apple") -> Color(0xFF000000)
-        lowerName.contains("disney") -> Color(0xFF0033A0)
-        lowerName.contains("youtube") -> Color(0xFFFF0000)
-        lowerName.contains("prime") -> Color(0xFF00A8E1)
-        else -> PrimaryBlue
     }
 }
