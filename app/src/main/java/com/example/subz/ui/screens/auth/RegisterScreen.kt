@@ -3,7 +3,6 @@ package com.example.subz.ui.screens.auth
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -15,13 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.compose.material.icons.outlined.Visibility
-import androidx.compose.material.icons.outlined.VisibilityOff
+import com.example.subz.ui.components.SubzPasswordField
+import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.AuthState
@@ -36,7 +33,6 @@ fun RegisterScreen(
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
     val authState by viewModel.authState.collectAsState()
 
     LaunchedEffect(authState) {
@@ -75,47 +71,30 @@ fun RegisterScreen(
             modifier = Modifier.padding(bottom = 32.dp)
         )
 
-        OutlinedTextField(
+        SubzTextField(
             value = fullName,
             onValueChange = { fullName = it },
-            label = { Text("Full Name") },
-            placeholder = { Text("John Doe") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Person Icon") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true
+            label = "Full Name",
+            placeholder = "John Doe",
+            leadingIcon = Icons.Default.Person,
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        SubzTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
-            placeholder = { Text("john@example.com") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Email, contentDescription = "Email Icon") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true
+            label = "Email",
+            placeholder = "john@example.com",
+            leadingIcon = Icons.Default.Email,
+            keyboardType = KeyboardType.Email
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
+        SubzPasswordField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            leadingIcon = { Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock Icon") },
-            trailingIcon = {
-                val image = if (passwordVisible) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, contentDescription = "Toggle Password Visibility")
-                }
-            },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            singleLine = true
+            label = "Password",
+            leadingIcon = Icons.Default.Lock
         )
         Spacer(modifier = Modifier.height(32.dp))
 
