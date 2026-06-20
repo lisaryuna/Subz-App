@@ -15,7 +15,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.subz.ui.components.BottomNavigationBar
 import com.example.subz.ui.navigation.Screen
-import com.example.subz.ui.screens.add.AddSubscriptionScreen
+import com.example.subz.ui.screens.DetailScreen
+import com.example.subz.ui.screens.manage.AddEditSubscriptionScreen
 import com.example.subz.ui.screens.home.HomeScreen
 import com.example.subz.ui.screens.profile.ProfileScreen
 import com.example.subz.ui.screens.search.SearchScreen
@@ -51,8 +52,34 @@ fun MainScreen() {
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Profile.route) { ProfileScreen() }
             composable("add") {
-                AddSubscriptionScreen(
+                AddEditSubscriptionScreen(
+                    subscriptionId = null,
                     onNavigateBack = { navController.popBackStack()}
+                )
+            }
+            composable(
+                route = Screen.EditSubscription.route
+            ) { backStackEntry ->
+                val idString = backStackEntry.arguments?.getString("id")
+                val id = idString?.toIntOrNull()
+
+                AddEditSubscriptionScreen(
+                    subscriptionId = id,
+                    onNavigateBack = { navController.popBackStack()}
+                )
+            }
+            composable(
+                route = Screen.DetailSubscription.route
+            ) { backStackEntry ->
+                val idString = backStackEntry.arguments?.getString("id")
+                val id = idString?.toIntOrNull() ?: 0
+
+                DetailScreen(
+                    subscriptionId = id,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToEdit = { subId ->
+                        navController.navigate(Screen.EditSubscription.createRoute(subId))
+                    }
                 )
             }
         }
