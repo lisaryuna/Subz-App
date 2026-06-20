@@ -1,0 +1,77 @@
+package com.example.subz.ui.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+sealed interface AuthState {
+    object Idle : AuthState
+    object Loading : AuthState
+    data class Success(val user: FirebaseUser?) : AuthState
+    data class Error(val message: String) : AuthState
+}
+@HiltViewModel
+class AuthViewModel @Inject constructor() : ViewModel() {
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
+
+    val currentUser: FirebaseUser?
+        get() = auth.currentUser
+
+    fun register(email: String, javaScriptStrippedPassword: String) {
+        if (email.isBlank() || javaScriptStrippedPassword.isBlank()) {
+            _authState.value = AuthState.Error("Email and password must be filled")
+            return
+        }
+
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            auth.createUserWithEmailAndPassword(email, javaScriptStrippedPassword)
+                .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _authState.value = AuthState.Success(auth.currentUser)
+                } else {
+                    val errorMessage = task.exception?.localizedMessage ?: "Registration Failed"
+                    _authState.value = AuthState.Error(errorMessage)
+                }
+                }
+        }
+    }
+
+    fun login(email: String, javaScriptStrippedPassword: String) {
+        if (email.isBlank() || javaScriptStrippedPassword.isBlank()) {
+            _authState.value = AuthState.Error("Email and password must be filled")
+            return
+        }
+
+        _authState.value = AuthState.Loading
+        viewModelScope.launch {
+            auth.signInWithEmailAndPassword(email, javaScriptStrippedPassword)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        _authState.value = AuthState.Success(auth.currentUser)
+                    } else {
+                        val errorMessage = task.exception?.localizedMessage ?: "Login failed. Please check your account."
+                        _authState.value = AuthState.Error(errorMessage)
+                    }
+                }
+        }
+    }
+
+    fun logout() {
+        auth.signOut()
+        _authState.value = AuthState.Idle
+    }
+
+    fun resetState() {
+        _authState.value = AuthState.Idle
+    }
+}
