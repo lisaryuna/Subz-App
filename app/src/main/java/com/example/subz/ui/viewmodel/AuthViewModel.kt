@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,18 +27,24 @@ class AuthViewModel @Inject constructor() : ViewModel() {
     val currentUser: FirebaseUser?
         get() = auth.currentUser
 
-    fun register(email: String, javaScriptStrippedPassword: String) {
-        if (email.isBlank() || javaScriptStrippedPassword.isBlank()) {
-            _authState.value = AuthState.Error("Email and password must be filled")
+    fun register(fullName: String, email: String, password: String) {
+        if (fullName.isBlank()|| email.isBlank() || password.isBlank()) {
+            _authState.value = AuthState.Error("All fields must be filled")
             return
         }
 
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            auth.createUserWithEmailAndPassword(email, javaScriptStrippedPassword)
+            auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _authState.value = AuthState.Success(auth.currentUser)
+                    val user = auth.currentUser
+                    val profileUpdates = userProfileChangeRequest {
+                        displayName = fullName
+                    }
+                    user?.updateProfile(profileUpdates)?.addOnCompleteListener {
+                        _authState.value = AuthState.Success(auth.currentUser)
+                    }
                 } else {
                     val errorMessage = task.exception?.localizedMessage ?: "Registration Failed"
                     _authState.value = AuthState.Error(errorMessage)
@@ -46,15 +53,15 @@ class AuthViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun login(email: String, javaScriptStrippedPassword: String) {
-        if (email.isBlank() || javaScriptStrippedPassword.isBlank()) {
+    fun login(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
             _authState.value = AuthState.Error("Email and password must be filled")
             return
         }
 
         _authState.value = AuthState.Loading
         viewModelScope.launch {
-            auth.signInWithEmailAndPassword(email, javaScriptStrippedPassword)
+            auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         _authState.value = AuthState.Success(auth.currentUser)
