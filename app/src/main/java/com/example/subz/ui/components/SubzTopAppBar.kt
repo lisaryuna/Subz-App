@@ -15,7 +15,7 @@ fun SubzTopAppBar(
     canNavigateBack: Boolean = false,
     navigateUp: () -> Unit = {}
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = {
             Text(
                 text = title,
@@ -34,7 +34,7 @@ fun SubzTopAppBar(
                 }
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent
         )
     )
