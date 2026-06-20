@@ -1,5 +1,6 @@
 package com.example.subz.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,8 +21,8 @@ fun SubzTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
-    placeholder: String,
-    leadingIcon: ImageVector,
+    placeholder: String = "",
+    leadingIcon: ImageVector? = null,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     OutlinedTextField(
@@ -29,7 +30,9 @@ fun SubzTextField(
         onValueChange = onValueChange,
         label = { Text(label) },
         placeholder = { Text(placeholder) },
-        leadingIcon = { Icon(imageVector = leadingIcon, contentDescription = "$label Icon") },
+        leadingIcon = if (leadingIcon != null) {
+            { Icon(imageVector = leadingIcon, contentDescription = "$label Icon") }
+        } else null,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -60,6 +63,31 @@ fun SubzPasswordField(
         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        singleLine = true
+    )
+}
+
+@Composable
+fun SubzClickableField(
+    value: String,
+    label: String,
+    trailingIcon: ImageVector,
+    onClick: () -> Unit
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = { },
+        label = { Text(label) },
+        readOnly = true,
+        trailingIcon = {
+            IconButton(onClick = onClick) {
+                Icon(imageVector = trailingIcon, contentDescription = "$label Icon")
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         singleLine = true
     )

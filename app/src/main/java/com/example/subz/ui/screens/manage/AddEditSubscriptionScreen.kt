@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.local.entity.WalletEntity
+import com.example.subz.ui.components.SubzClickableField
+import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
@@ -90,55 +92,33 @@ fun AddEditSubscriptionScreen(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            OutlinedTextField(
+            SubzTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Service name") },
-                modifier = Modifier.fillMaxWidth()
+                label = "Service name",
+                placeholder = "e.g., Netflix"
             )
 
-            OutlinedTextField(
+            SubzTextField(
                 value = price,
                 onValueChange = { price = it },
-                label = { Text("Price (Rp)") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                label = "Price (Rp)",
+                placeholder = "e.g., 50000",
+                keyboardType = KeyboardType.Number,
             )
 
-            OutlinedTextField(
+            SubzClickableField(
                 value = renewalDate,
-                onValueChange = { },
-                label = { Text("Renewal / Trial End") },
-                readOnly = true,
-                trailingIcon = {
-                    IconButton(onClick = { showDatePicker = true }) {
-                        Icon(
-                            imageVector = Icons.Default.DateRange,
-                            contentDescription = "Select Date"
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showDatePicker = true }
+                label = "Renewal / Trial End",
+                trailingIcon = Icons.Default.DateRange,
+                onClick = { showDatePicker = true }
             )
 
-            OutlinedTextField(
+            SubzClickableField(
                 value = paymentMethod,
-                onValueChange = { },
-                label = { Text("Payment Method") },
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showWalletSelector = true },
-                trailingIcon = {
-                    IconButton(onClick = { showWalletSelector = true }) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Select Wallet"
-                        )
-                    }
-                }
+                label = "Payment Method",
+                trailingIcon = Icons.Default.KeyboardArrowDown,
+                onClick = { showWalletSelector = true }
             )
             Spacer(modifier = Modifier.weight(1f))
 
