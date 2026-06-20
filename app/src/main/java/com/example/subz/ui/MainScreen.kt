@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +24,7 @@ import com.example.subz.ui.screens.manage.AddEditSubscriptionScreen
 import com.example.subz.ui.screens.home.HomeScreen
 import com.example.subz.ui.screens.profile.ProfileScreen
 import com.example.subz.ui.screens.search.SearchScreen
+import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.viewmodel.AuthViewModel
 
 @Composable
@@ -31,7 +33,7 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val startDestination = if (authViewModel.currentUser != null) Screen.Home.route else Screen.Login.route
-    val noBottomBarRoutes = listOf(Screen.Login.route, Screen.Register.route, "add")
+    val noBottomBarRoutes = listOf(Screen.Login.route, Screen.Register.route, Screen.AddSubscription.route)
 
     Scaffold(
         bottomBar = {
@@ -42,7 +44,9 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
         floatingActionButton = {
             if (currentRoute == Screen.Home.route) {
                 FloatingActionButton(
-                    onClick = { navController.navigate("add")}
+                    onClick = { navController.navigate(Screen.AddSubscription.route)},
+                    containerColor = PrimaryBlue,
+                    contentColor = Color.White
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Subscription")
                 }
@@ -86,15 +90,13 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
                     }
                 )
             }
-            composable("add") {
+            composable(Screen.AddSubscription.route) {
                 AddEditSubscriptionScreen(
                     subscriptionId = null,
                     onNavigateBack = { navController.popBackStack()}
                 )
             }
-            composable(
-                route = Screen.EditSubscription.route
-            ) { backStackEntry ->
+            composable(Screen.EditSubscription.route) { backStackEntry ->
                 val idString = backStackEntry.arguments?.getString("id")
                 val id = idString?.toIntOrNull()
 
@@ -103,9 +105,7 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
                     onNavigateBack = { navController.popBackStack()}
                 )
             }
-            composable(
-                route = Screen.DetailSubscription.route
-            ) { backStackEntry ->
+            composable(Screen.DetailSubscription.route) { backStackEntry ->
                 val idString = backStackEntry.arguments?.getString("id")
                 val id = idString?.toIntOrNull() ?: 0
 
