@@ -284,12 +284,11 @@ private fun AddWalletSheet(
                 fontWeight = FontWeight.Bold,
                 color = PrimaryBlue
             )
-            OutlinedTextField(
+            SubzTextField(
                 value = newWalletName,
                 onValueChange = { newWalletName = it },
-                label = { Text("Wallet Name") },
-                placeholder = { Text("e.g., Jenius, Jago") },
-                modifier = Modifier.fillMaxWidth()
+                label = "Wallet Name",
+                placeholder = "e.g., Jenius, Jago"
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
