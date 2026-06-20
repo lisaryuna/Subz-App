@@ -77,7 +77,15 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
             }
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Search.route) { SearchScreen() }
-            composable(Screen.Profile.route) { ProfileScreen() }
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onNavigateToLogin = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) {inclusive = true}
+                        }
+                    }
+                )
+            }
             composable("add") {
                 AddEditSubscriptionScreen(
                     subscriptionId = null,
