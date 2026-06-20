@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -16,16 +17,21 @@ import androidx.navigation.compose.rememberNavController
 import com.example.subz.ui.components.BottomNavigationBar
 import com.example.subz.ui.navigation.Screen
 import com.example.subz.ui.screens.DetailScreen
+import com.example.subz.ui.screens.auth.LoginScreen
+import com.example.subz.ui.screens.auth.RegisterScreen
 import com.example.subz.ui.screens.manage.AddEditSubscriptionScreen
 import com.example.subz.ui.screens.home.HomeScreen
 import com.example.subz.ui.screens.profile.ProfileScreen
 import com.example.subz.ui.screens.search.SearchScreen
+import com.example.subz.ui.viewmodel.AuthViewModel
 
 @Composable
-fun MainScreen() {
+fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val startDestination = if (authViewModel.currentUser != null) Screen.Home.route else Screen.Login.route
+    val noBottomBarRoutes = listOf(Screen.Login.route, Screen.Register.route, "add")
 
     Scaffold(
         bottomBar = {
@@ -48,6 +54,27 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    onNavigateToRegister = { navController.navigate(Screen.Register.route)},
+                    onNavigateToHome = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.Register.route) {
+                RegisterScreen(
+                    onNavigateToLogin = { navController.navigate(Screen.Login.route)},
+                    onNavigateToHome = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true }
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Search.route) { SearchScreen() }
             composable(Screen.Profile.route) { ProfileScreen() }
