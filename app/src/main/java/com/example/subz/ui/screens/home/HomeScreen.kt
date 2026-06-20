@@ -1,22 +1,34 @@
 package com.example.subz.ui.screens.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.data.local.entity.SubscriptionEntity
+import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.theme.BackgroundLight
+import com.example.subz.ui.theme.PrimaryBlue
+import com.example.subz.ui.theme.SecondaryLightBlue
+import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -25,53 +37,197 @@ fun HomeScreen(
     val subscriptions by viewModel.subscriptions.collectAsState()
     val totalActivePrice by viewModel.totalActivePrice.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Card(
+    Scaffold(
+        topBar = {
+            SubzTopAppBar(title = "Subz")
+        }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+                .fillMaxSize()
+                .background(BackgroundLight)
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp)
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Text(
-                    text = "Total Tagihan Aktif",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = "Rp$totalActivePrice",
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 24.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(PrimaryBlue, SecondaryLightBlue)
+                            )
+                        )
+                        .padding(20.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "Total Active Subscriptions",
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 14.sp
+                        )
+                        Text(
+                            text = formatRupiah(totalActivePrice),
+                            color = Color.White,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Bottom
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = Color.White.copy(alpha = 0.2f),
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = "Active: ${subscriptions.size}",
+                                    color = Color.White,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
+
+                            Icon(
+                                imageVector = Icons.Default.BarChart,
+                                contentDescription = "Stats",
+                                tint = Color.White.copy(alpha = 0.6f),
+                                modifier = Modifier.size(32.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            Text(
+                text = "My Subscriptions",
+                color = TextDarkNavy,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            if (subscriptions.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        text = "No subscriptions added yet.",
+                        color = Color.Gray
+                    )
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 80.dp)
+                ) {
+                    items(subscriptions) { sub ->
+                        SubscriptionItem(sub = sub)
+                    }
+                }
             }
         }
+    }
+}
 
-        Text(
-            text = "Langganan Aktif",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+@Composable
+fun SubscriptionItem(sub: SubscriptionEntity) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .background(getServiceColor(sub.name), shape = RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = sub.name.take(1).uppercase(),
+                    color = Color.White,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-        if (subscriptions.isEmpty()) {
-            Text(
-                text = "Belum ada tagihan yang dicatat.",
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        } else {
-            LazyColumn {
-                items(subscriptions) { sub ->
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = sub.name,
+                    color = TextDarkNavy,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = sub.paymentMethod,
+                    color = Color.Gray,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = formatRupiah(sub.price),
+                    color = PrimaryBlue,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.DateRange,
+                        contentDescription = "Date",
+                        tint = Color.Gray,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${sub.name} - Rp${sub.price}",
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        text = sub.renewalDate,
+                        color = Color.Gray,
+                        fontSize = 12.sp
                     )
                 }
             }
         }
+    }
+}
+
+fun formatRupiah(amount: Double): String {
+    val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
+    return "Rp ${format.format(amount)}"
+}
+
+fun getServiceColor(name: String): Color {
+    val lowerName = name.lowercase()
+    return when {
+        lowerName.contains("netflix") -> Color(0xFFE50914)
+        lowerName.contains("spotify") -> Color(0xFF1DB954)
+        lowerName.contains("apple") -> Color(0xFF000000)
+        lowerName.contains("disney") -> Color(0xFF0033A0)
+        lowerName.contains("youtube") -> Color(0xFFFF0000)
+        lowerName.contains("prime") -> Color(0xFF00A8E1)
+        else -> PrimaryBlue
     }
 }
