@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.data.local.entity.SubscriptionEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -35,7 +36,7 @@ class HomeViewModel @Inject constructor(
             )
 
     fun addSubscription(name: String, price: Double, renewalDate: String, paymentMethod: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val newSubscription = SubscriptionEntity(
                 name = name,
                 price = price,
@@ -47,13 +48,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateSubscription(subscriptionEntity: SubscriptionEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             subscriptionDao.updateSubscription(subscriptionEntity)
         }
     }
 
     fun deleteSubscription(subscriptionEntity: SubscriptionEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             subscriptionDao.deleteSubscription(subscriptionEntity)
         }
     }

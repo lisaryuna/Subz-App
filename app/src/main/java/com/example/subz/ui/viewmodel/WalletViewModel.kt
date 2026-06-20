@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.WalletDao
 import com.example.subz.data.local.entity.WalletEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -24,13 +25,13 @@ class WalletViewModel @Inject constructor(
             )
 
     fun addWallet(name: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             walletDao.insertWallet(WalletEntity(name = name))
         }
     }
 
     fun deleteWallet(wallet: WalletEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             walletDao.deleteWallet(wallet)
         }
     }
