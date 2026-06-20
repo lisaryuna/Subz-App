@@ -1,7 +1,6 @@
 package com.example.subz.ui.screens.auth
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
@@ -11,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,7 +19,6 @@ import com.example.subz.ui.components.AuthFooter
 import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzPasswordField
 import com.example.subz.ui.components.SubzTextField
-import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.viewmodel.AuthState
 import com.example.subz.ui.viewmodel.AuthViewModel
 
