@@ -37,7 +37,7 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
 
     Scaffold(
         bottomBar = {
-            if (currentRoute != "add") {
+            if (currentRoute !in noBottomBarRoutes) {
                 BottomNavigationBar(navController = navController)
             }
         },
@@ -86,7 +86,12 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
                     }
                 )
             }
-            composable(Screen.Search.route) { SearchScreen() }
+            composable(Screen.Search.route) { SearchScreen(
+                    onNavigateToDetail = { subId ->
+                        navController.navigate(Screen.DetailSubscription.createRoute(subId))
+                    }
+                )
+            }
             composable(Screen.Profile.route) {
                 ProfileScreen(
                     onNavigateToLogin = {
