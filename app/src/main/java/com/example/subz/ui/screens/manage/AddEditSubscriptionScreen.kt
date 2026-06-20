@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.local.entity.WalletEntity
+import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzClickableField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.components.SubzTopAppBar
@@ -122,7 +123,8 @@ fun AddEditSubscriptionScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
 
-            Button(
+            SubzButton(
+                text = buttonText,
                 onClick = {
                     if (name.isNotBlank() && price.isNotBlank()) {
                         if (isEditMode && subscriptionToEdit != null) {
@@ -144,11 +146,8 @@ fun AddEditSubscriptionScreen(
                         }
                         onNavigateBack()
                     }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(buttonText)
-            }
+                }
+            )
         }
 
         if (showDatePicker) {
@@ -299,13 +298,11 @@ private fun AddWalletSheet(
                     Text("Cancel", color = TextDarkNavy)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                Button(
+                SubzButton(
+                    text = "Save",
                     onClick = { if (newWalletName.isNotBlank()) onSave(newWalletName) },
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
-                ) {
-                    Text("Save")
-                }
+                    modifier = Modifier.width(120.dp)
+                )
             }
         }
     }
