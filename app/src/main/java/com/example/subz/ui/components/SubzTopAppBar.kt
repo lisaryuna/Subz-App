@@ -1,11 +1,13 @@
 package com.example.subz.ui.components
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.example.subz.ui.theme.PrimaryBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +38,7 @@ fun SubzTopAppBar(
         },
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = Color.Transparent
-        )
+        ),
+        windowInsets = WindowInsets(0.dp)
     )
 }
