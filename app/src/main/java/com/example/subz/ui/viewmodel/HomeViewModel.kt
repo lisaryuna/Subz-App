@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.data.local.entity.SubscriptionEntity
+import com.example.subz.data.repository.CloudSyncRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val subscriptionDao: SubscriptionDao
+    private val subscriptionDao: SubscriptionDao,
+    private val cloudSyncRepository: CloudSyncRepository
 ) : ViewModel() {
     val subscriptions: StateFlow<List<SubscriptionEntity>> =
         subscriptionDao.getAllSubscriptions()
@@ -35,6 +37,12 @@ class HomeViewModel @Inject constructor(
                 initialValue = 0.0
             )
 
+    private suspend fun triggerAutoSync() {
+        if (cloudSyncRepository.isAutoSyncEnabled()) {
+            cloudSyncRepository.backupDataToCloud()
+        }
+    }
+
     fun addSubscription(name: String, price: Double, renewalDate: String, paymentMethod: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val newSubscription = SubscriptionEntity(
@@ -44,18 +52,21 @@ class HomeViewModel @Inject constructor(
                 paymentMethod = paymentMethod
             )
             subscriptionDao.insertSubscription(newSubscription)
+            triggerAutoSync()
         }
     }
 
     fun updateSubscription(subscriptionEntity: SubscriptionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             subscriptionDao.updateSubscription(subscriptionEntity)
+            triggerAutoSync()
         }
     }
 
     fun deleteSubscription(subscriptionEntity: SubscriptionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             subscriptionDao.deleteSubscription(subscriptionEntity)
+            triggerAutoSync()
         }
     }
 
