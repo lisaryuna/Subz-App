@@ -26,18 +26,22 @@ import com.example.subz.ui.theme.IndicatorLightBlue
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.AuthViewModel
+import com.example.subz.ui.viewmodel.ProfileViewModel
 
 @Composable
 fun ProfileScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     onNavigateToLogin: () -> Unit
 ) {
-    val currentUser = viewModel.currentUser
+    val currentUser = authViewModel.currentUser
     val displayName = currentUser?.displayName ?: "User"
     val email = currentUser?.email ?: "No Email"
     val initials = getInitials(displayName)
 
-    var isCloudSyncEnabled by remember { mutableStateOf(true) }
+    val lastSyncTime by profileViewModel.lastSyncTime.collectAsState()
+    val isCloudSyncEnabled by profileViewModel.isSyncEnabled.collectAsState()
+    val isSyncing by profileViewModel.isSyncing.collectAsState()
     var isReminderEnabled by remember { mutableStateOf(true) }
 
     Scaffold(
@@ -92,16 +96,23 @@ fun ProfileScreen(
                     SettingsRow(
                         icon = Icons.Outlined.Cloud,
                         title = "Cloud Sync",
-                        subtitle = "Last backed up: Today",
+                        subtitle = if (isSyncing) "Syncing to cloud..." else "Last backed up: $lastSyncTime",
                         content = {
-                            Switch(
-                                checked = isCloudSyncEnabled,
-                                onCheckedChange = { isCloudSyncEnabled = it },
-                                colors = SwitchDefaults.colors(
-                                    checkedTrackColor = PrimaryBlue,
-                                    uncheckedTrackColor = Color.LightGray
+                            if (isSyncing) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = PrimaryBlue,
+                                    strokeWidth = 2.dp)
+                            } else {
+                                Switch(
+                                    checked = isCloudSyncEnabled,
+                                    onCheckedChange = { profileViewModel.toggleSync(it) },
+                                    colors = SwitchDefaults.colors(
+                                        checkedTrackColor = PrimaryBlue,
+                                        uncheckedTrackColor = Color.LightGray
+                                    )
                                 )
-                            )
+                            }
                         }
                     )
                     HorizontalDivider(color = BackgroundLight)
@@ -134,7 +145,7 @@ fun ProfileScreen(
 
             OutlinedButton(
                 onClick = {
-                    viewModel.logout()
+                    authViewModel.logout()
                     onNavigateToLogin()
                 },
                 modifier = Modifier
