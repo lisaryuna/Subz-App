@@ -1,6 +1,7 @@
 package com.example.subz.ui.navigation
 
 sealed class Screen(val route: String) {
+    object Splash : Screen("splash")
     object Login : Screen("Login")
     object Register : Screen("Register")
     object Home : Screen("home")
