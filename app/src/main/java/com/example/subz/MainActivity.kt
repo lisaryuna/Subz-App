@@ -1,6 +1,7 @@
 package com.example.subz
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -52,14 +53,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun scheduleBillReminder() {
-        val reminderRequest = PeriodicWorkRequestBuilder<BillReminderWorker>(
-            24, TimeUnit.HOURS
-        ).build()
+        val prefs = getSharedPreferences("subz_pref", Context.MODE_PRIVATE)
+        val isReminderEnabled = prefs.getBoolean("reminder_enabled", true)
 
-        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
-            "SubzBillReminderWork",
-            ExistingPeriodicWorkPolicy.KEEP,
-            reminderRequest
-        )
+        if (isReminderEnabled) {
+            val reminderRequest = PeriodicWorkRequestBuilder<BillReminderWorker>(
+                24, TimeUnit.HOURS
+            ).build()
+
+            WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
+                "SubzBillReminderWork",
+                ExistingPeriodicWorkPolicy.KEEP,
+                reminderRequest
+            )
+        }
     }
 }
