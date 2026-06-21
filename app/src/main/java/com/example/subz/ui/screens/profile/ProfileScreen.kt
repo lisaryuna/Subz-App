@@ -42,7 +42,7 @@ fun ProfileScreen(
     val lastSyncTime by profileViewModel.lastSyncTime.collectAsState()
     val isCloudSyncEnabled by profileViewModel.isSyncEnabled.collectAsState()
     val isSyncing by profileViewModel.isSyncing.collectAsState()
-    var isReminderEnabled by remember { mutableStateOf(true) }
+    val isReminderEnabled by profileViewModel.isReminderEnabled.collectAsState()
 
     Scaffold(
         topBar = {
@@ -122,7 +122,7 @@ fun ProfileScreen(
                         content = {
                             Switch(
                                 checked = isReminderEnabled,
-                                onCheckedChange = { isReminderEnabled = it },
+                                onCheckedChange = { profileViewModel.toggleReminder(it) },
                                 colors = SwitchDefaults.colors(
                                     checkedTrackColor = PrimaryBlue,
                                     uncheckedTrackColor = Color.LightGray
