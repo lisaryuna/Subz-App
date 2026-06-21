@@ -28,6 +28,7 @@ import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzClickableField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.theme.AccentCoral
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
@@ -56,12 +57,12 @@ fun AddEditSubscriptionScreen(
     var price by remember { mutableStateOf("") }
     var renewalDate by remember { mutableStateOf("") }
     var paymentMethod by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
     var showWalletSelector by remember { mutableStateOf(false) }
     var showAddWalletDialog by remember { mutableStateOf(false) }
-    var newWalletName by remember { mutableStateOf("") }
 
     LaunchedEffect(subscriptionToEdit) {
         subscriptionToEdit?.let { sub ->
@@ -123,15 +124,33 @@ fun AddEditSubscriptionScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
 
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = AccentCoral,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             SubzButton(
                 text = buttonText,
                 onClick = {
-                    if (name.isNotBlank() && price.isNotBlank()) {
+                    val parsedPrice = price.toDoubleOrNull()
+
+                    if (name.isBlank() || price.isBlank() || renewalDate.isBlank() || paymentMethod.isBlank()) {
+                        errorMessage = "All fields are required"
+                    }
+                    else if (parsedPrice == null || parsedPrice < 0.0) {
+                        errorMessage = "Price cannot be negative"
+                    }
+                    else {
+                        errorMessage = null
                         if (isEditMode && subscriptionToEdit != null) {
                             viewModel.updateSubscription(
                                 subscriptionToEdit!!.copy(
                                     name = name,
-                                    price = price.toDoubleOrNull() ?: 0.0,
+                                    price = parsedPrice,
                                     renewalDate = renewalDate,
                                     paymentMethod = paymentMethod
                                 )
@@ -139,7 +158,7 @@ fun AddEditSubscriptionScreen(
                         } else {
                             viewModel.addSubscription(
                                 name = name,
-                                price = price.toDoubleOrNull() ?: 0.0,
+                                price = parsedPrice,
                                 renewalDate = renewalDate,
                                 paymentMethod = paymentMethod
                             )
