@@ -29,6 +29,7 @@ interface SubscriptionDao {
     @Query("SELECT * FROM subscriptions WHERE id = :id")
     fun getSubscriptionById(id: Int): Flow<SubscriptionEntity?>
 
+    @JvmSuppressWildcards
     @Query("SELECT * FROM subscriptions")
     suspend fun getAllSubscriptionsOneShot(): List<SubscriptionEntity>
 }
