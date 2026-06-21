@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.subz.ui.components.BottomNavigationBar
 import com.example.subz.ui.navigation.Screen
-import com.example.subz.ui.screens.DetailScreen
+import com.example.subz.ui.screens.detail.DetailScreen
 import com.example.subz.ui.screens.auth.LoginScreen
 import com.example.subz.ui.screens.auth.RegisterScreen
 import com.example.subz.ui.screens.manage.AddEditSubscriptionScreen
