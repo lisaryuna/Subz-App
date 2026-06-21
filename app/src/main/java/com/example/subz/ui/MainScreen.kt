@@ -24,6 +24,7 @@ import com.example.subz.ui.screens.manage.AddEditSubscriptionScreen
 import com.example.subz.ui.screens.home.HomeScreen
 import com.example.subz.ui.screens.profile.ProfileScreen
 import com.example.subz.ui.screens.search.SearchScreen
+import com.example.subz.ui.screens.splash.SplashScreen
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.viewmodel.AuthViewModel
 
@@ -32,8 +33,8 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val startDestination = if (authViewModel.currentUser != null) Screen.Home.route else Screen.Login.route
-    val noBottomBarRoutes = listOf(Screen.Login.route, Screen.Register.route, Screen.AddSubscription.route)
+    val startDestination = Screen.Splash.route
+    val noBottomBarRoutes = listOf(Screen.Splash.route, Screen.Login.route, Screen.Register.route, Screen.AddSubscription.route)
 
     Scaffold(
         bottomBar = {
@@ -55,9 +56,20 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         ) {
+            composable(Screen.Splash.route) {
+                SplashScreen (
+                    onNavigateNext = {
+                        val nextRoute = if (authViewModel.currentUser != null) Screen.Home.route else Screen.Login.route
+                        navController.navigate(nextRoute) {
+                            popUpTo(Screen.Splash.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
             composable(Screen.Login.route) {
                 LoginScreen(
                     onNavigateToRegister = { navController.navigate(Screen.Register.route)},
