@@ -19,6 +19,7 @@ interface WalletDao {
     @Query("SELECT * FROM wallets ORDER BY name ASC")
     fun getAllWallets(): Flow<List<WalletEntity>>
 
+    @JvmSuppressWildcards
     @Query("SELECT * FROM wallets")
     suspend fun getAllWalletsOneShot(): List<WalletEntity>
 }
