@@ -45,4 +45,11 @@ interface SubscriptionDao {
         SELECT subscriptions.*, wallets.name AS walletName
         FROM subscriptions INNER JOIN wallets ON subscriptions.walletId = wallets.id""")
     suspend fun getAllSubscriptionsOneShot(): List<SubWithWallet>
+
+    @JvmSuppressWildcards
+    @Query("""
+        SELECT subscriptions.*, wallets.name AS walletName
+        FROM subscriptions INNER JOIN wallets ON subscriptions.walletId = wallets.id
+        WHERE subscriptions.renewalDate = :date""")
+    suspend fun getSubscriptionsByDateOneShot(date: String): List<SubWithWallet>
 }
