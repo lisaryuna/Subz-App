@@ -34,7 +34,13 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val startDestination = Screen.Splash.route
-    val noBottomBarRoutes = listOf(Screen.Splash.route, Screen.Login.route, Screen.Register.route, Screen.AddSubscription.route)
+    val noBottomBarRoutes = listOf(
+        Screen.Splash.route,
+        Screen.Login.route,
+        Screen.Register.route,
+        Screen.AddSubscription.route,
+        Screen.EditSubscription.route,
+        Screen.DetailSubscription.route)
 
     Scaffold(
         bottomBar = {
