@@ -149,18 +149,18 @@ fun AddEditSubscriptionScreen(
                         if (isEditMode && subscriptionToEdit != null) {
                             viewModel.updateSubscription(
                                 subscriptionToEdit!!.copy(
-                                    name = name,
+                                    name = name.trim(),
                                     price = parsedPrice,
-                                    renewalDate = renewalDate,
-                                    paymentMethod = paymentMethod
+                                    renewalDate = renewalDate.trim(),
+                                    paymentMethod = paymentMethod.trim()
                                 )
                             )
                         } else {
                             viewModel.addSubscription(
-                                name = name,
+                                name = name.trim(),
                                 price = parsedPrice,
-                                renewalDate = renewalDate,
-                                paymentMethod = paymentMethod
+                                renewalDate = renewalDate.trim(),
+                                paymentMethod = paymentMethod.trim()
                             )
                         }
                         onNavigateBack()
@@ -208,7 +208,7 @@ fun AddEditSubscriptionScreen(
             AddWalletSheet(
                 onDismiss = { showAddWalletDialog = false },
                 onSave = { newName ->
-                    walletViewModel.addWallet(newName)
+                    walletViewModel.addWallet(newName.trim())
                     showAddWalletDialog = false
                     showWalletSelector = true
                 }
