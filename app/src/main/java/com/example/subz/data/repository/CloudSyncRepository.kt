@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.example.subz.data.local.dao.SubscriptionDao
+import com.example.subz.data.local.dao.WalletDao
 import com.example.subz.utils.DateFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -16,6 +17,7 @@ import javax.inject.Singleton
 @Singleton
 class CloudSyncRepository @Inject constructor(
     private val subscriptionDao: SubscriptionDao,
+    private val walletDao: WalletDao,
     private val database: FirebaseDatabase,
     private val auth: FirebaseAuth,
     @param:ApplicationContext private val context: Context
@@ -39,14 +41,21 @@ class CloudSyncRepository @Inject constructor(
         val userId = user.uid
 
         return try {
-            val subscriptions = subscriptionDao.getAllSubscriptionsOneShot()
-            val userRef = database.reference.child("users").child(userId).child("subscriptions")
-            val updates = mutableMapOf<String, Any>()
-            subscriptions.forEach { sub ->
-                updates[sub.subscription.id.toString()] = sub.subscription
+            val wallets = walletDao.getAllWalletsOneShot()
+            val walletsRef = database.reference.child("users").child(userId).child("wallets")
+            val walletUpdates = mutableMapOf<String, Any>()
+            wallets.forEach { wallet ->
+                walletUpdates[wallet.id.toString()] = wallet
             }
+            walletsRef.setValue(walletUpdates).await()
 
-            userRef.setValue(updates).await()
+            val subscriptions = subscriptionDao.getAllSubscriptionsOneShot()
+            val subsRef = database.reference.child("users").child(userId).child("subscriptions")
+            val subsUpdates = mutableMapOf<String, Any>()
+            subscriptions.forEach { sub ->
+                subsUpdates[sub.subscription.id.toString()] = sub.subscription
+            }
+            subsRef.setValue(subsUpdates).await()
 
             val currentTime = DateFormatter.formatToDateTime(Date())
             prefs.edit { putString("last_sync_time", currentTime) }
