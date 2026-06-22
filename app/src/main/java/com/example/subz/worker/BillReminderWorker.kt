@@ -29,13 +29,13 @@ class BillReminderWorker @AssistedInject constructor(
         val tomorrowSubscriptions = subscriptionDao.getSubscriptionsByDateOneShot(tomorrowDate)
 
         tomorrowSubscriptions.forEach { sub ->
-            showNotification(sub.subscription.name, sub.subscription.price)
+            showNotification(sub.subscription.name, sub.subscription.price, sub.subscription.id)
         }
 
         return Result.success()
     }
 
-    private fun showNotification(serviceName: String, price: Double) {
+    private fun showNotification(serviceName: String, price: Double, notificationId: Int) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "bill_reminder_channel"
 
@@ -56,6 +56,6 @@ class BillReminderWorker @AssistedInject constructor(
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(serviceName.hashCode(), notification)
+        notificationManager.notify(notificationId, notification)
     }
 }
