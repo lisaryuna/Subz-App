@@ -37,7 +37,7 @@ fun DetailScreen(
     onNavigateBack: () -> Unit,
     onNavigateToEdit: (Int) -> Unit
 ) {
-    val subscription by viewModel.getSubscriptionById(subscriptionId).collectAsState(initial = null)
+    val subscriptionData by viewModel.getSubscriptionById(subscriptionId).collectAsState(initial = null)
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -49,12 +49,13 @@ fun DetailScreen(
             )
         }
     ) { innerPadding ->
-        if (subscription == null) {
+        if (subscriptionData == null) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
         } else {
-            val sub = subscription!!
+            val sub = subscriptionData!!.subscription
+            val paymentMethodName = subscriptionData!!.walletName
 
             Column(
                 modifier = Modifier
@@ -130,13 +131,13 @@ fun DetailScreen(
                             Text("Next Payment", color = Color.Gray)
                             Text(sub.renewalDate, fontWeight = FontWeight.Medium)
                         }
-                        Divider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.3f))
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.3f))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("Payment Method", color = Color.Gray)
-                            Text(sub.paymentMethod, fontWeight = FontWeight.Medium)
+                            Text(paymentMethodName, fontWeight = FontWeight.Medium)
                         }
                     }
                 }
