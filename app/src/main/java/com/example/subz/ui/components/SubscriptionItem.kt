@@ -19,10 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.R
+import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.utils.CurrencyFormatter
 
 
@@ -55,9 +55,12 @@ fun getServiceIcon(name: String): Int? {
 
 @Composable
 fun SubscriptionItem(
-    sub: SubscriptionEntity,
+    item: SubWithWallet,
     onClick: () -> Unit
 ) {
+    val sub = item.subscription
+    val paymentMethod = item.walletName
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,7 +114,7 @@ fun SubscriptionItem(
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = sub.paymentMethod,
+                        text = paymentMethod,
                         color = Color.Gray,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 2.dp)
