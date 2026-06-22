@@ -42,7 +42,7 @@ class CloudSyncRepository @Inject constructor(
             val userRef = database.reference.child("users").child(userId).child("subscriptions")
             val updates = mutableMapOf<String, Any>()
             subscriptions.forEach { sub ->
-                updates[sub.subscription.id.toString()] = sub
+                updates[sub.subscription.id.toString()] = sub.subscription
             }
 
             userRef.setValue(updates).await()
