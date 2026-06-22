@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubscriptionItem
+import com.example.subz.ui.components.SubzEmptyState
 import com.example.subz.ui.theme.BackgroundLight
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
@@ -99,9 +100,7 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (filteredSubscriptions.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No subscriptions found.", color = Color.Gray)
-            }
+            SubzEmptyState(message = "No subscriptions found.")
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
