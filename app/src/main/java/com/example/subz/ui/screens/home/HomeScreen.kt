@@ -127,10 +127,10 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
-                    items(subscriptions) { sub ->
+                    items(subscriptions) { data ->
                         SubscriptionItem(
-                            sub = sub,
-                            onClick = { onNavigateToDetail(sub.id) }
+                            item = data,
+                            onClick = { onNavigateToDetail(data.subscription.id) }
                             )
                     }
                 }
