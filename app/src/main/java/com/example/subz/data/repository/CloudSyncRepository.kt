@@ -2,6 +2,7 @@ package com.example.subz.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.utils.DateFormatter
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +18,7 @@ class CloudSyncRepository @Inject constructor(
     private val subscriptionDao: SubscriptionDao,
     private val database: FirebaseDatabase,
     private val auth: FirebaseAuth,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) {
     private val prefs: SharedPreferences = context.getSharedPreferences("subz_pref", Context.MODE_PRIVATE)
 
@@ -30,7 +31,7 @@ class CloudSyncRepository @Inject constructor(
     }
 
     fun setAutoSyncEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean("auto_sync_enabled", enabled).apply()
+        prefs.edit { putBoolean("auto_sync_enabled", enabled)}
     }
 
     suspend fun backupDataToCloud(): Result<String> {
@@ -48,7 +49,7 @@ class CloudSyncRepository @Inject constructor(
             userRef.setValue(updates).await()
 
             val currentTime = DateFormatter.formatToDateTime(Date())
-            prefs.edit().putString("last_sync_time", currentTime).apply()
+            prefs.edit { putString("last_sync_time", currentTime) }
 
             Result.success(currentTime)
         } catch (e: Exception) {
