@@ -6,6 +6,6 @@ import java.util.Locale
 object CurrencyFormatter {
     fun formatRupiah(amount: Double): String {
         val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
-        return "RP ${format.format(amount)}"
+        return "Rp ${format.format(amount)}"
     }
 }

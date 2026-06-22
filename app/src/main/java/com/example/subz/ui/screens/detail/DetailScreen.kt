@@ -28,6 +28,7 @@ import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
 import com.example.subz.ui.viewmodel.HomeViewModel
 import com.example.subz.utils.CurrencyFormatter
+import com.example.subz.utils.DateFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +130,7 @@ fun DetailScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("Next Payment", color = Color.Gray)
-                            Text(sub.renewalDate, fontWeight = FontWeight.Medium)
+                            Text(DateFormatter.formatForUI(sub.renewalDate), fontWeight = FontWeight.Medium)
                         }
                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.3f))
                         Row(

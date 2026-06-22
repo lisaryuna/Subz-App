@@ -25,6 +25,7 @@ import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.R
 import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.utils.CurrencyFormatter
+import com.example.subz.utils.DateFormatter
 
 
 fun getServiceIcon(name: String): Int? {
@@ -141,7 +142,7 @@ fun SubscriptionItem(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = sub.renewalDate,
+                        text = DateFormatter.formatForUI(sub.renewalDate),
                         color = Color.Gray,
                         fontSize = 12.sp
                     )
