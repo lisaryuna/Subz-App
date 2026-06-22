@@ -222,7 +222,7 @@ fun AddEditSubscriptionScreen(
         if (walletToDelete != null) {
             SubzAlertDialog(
                 title = "Delete Wallet",
-                message = "Are you sure you want to delete ${walletToDelete?.name}? This action cannot be undone.",
+                message = "Are you sure you want to delete ${walletToDelete?.name}? WARNING: All subscriptions using this payment method will also be deleted permanently!",
                 confirmText = "Delete",
                 isDestructive = true,
                 onConfirm = {
