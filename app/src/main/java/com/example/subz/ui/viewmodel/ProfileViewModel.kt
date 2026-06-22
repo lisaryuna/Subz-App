@@ -1,6 +1,7 @@
 package com.example.subz.ui.viewmodel
 
 import android.content.Context
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -20,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val syncRepository: CloudSyncRepository,
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _lastSyncTime = MutableStateFlow(syncRepository.getLastSyncTime())
     val lastSyncTime: StateFlow<String> = _lastSyncTime.asStateFlow()
@@ -45,7 +46,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun toggleReminder(enabled: Boolean) {
-        prefs.edit().putBoolean("reminder_enabled", enabled).apply()
+        prefs.edit { putBoolean("reminder_enabled", enabled)}
         _isReminderEnabled.value = enabled
 
         val workManager = WorkManager.getInstance(context)
