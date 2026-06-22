@@ -1,14 +1,12 @@
 package com.example.subz.ui.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
-import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,15 +19,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.ui.components.SubscriptionItem
+import com.example.subz.ui.components.SubzEmptyState
 import com.example.subz.ui.components.SubzTopAppBar
-import com.example.subz.ui.components.formatRupiah
 import com.example.subz.ui.theme.BackgroundLight
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
+import com.example.subz.utils.CurrencyFormatter
 
 @Composable
 fun HomeScreen(
@@ -75,7 +73,7 @@ fun HomeScreen(
                             fontSize = 14.sp
                         )
                         Text(
-                            text = formatRupiah(totalActivePrice),
+                            text = CurrencyFormatter.formatRupiah(totalActivePrice),
                             color = Color.White,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
@@ -122,12 +120,7 @@ fun HomeScreen(
             )
 
             if (subscriptions.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = "No subscriptions added yet.",
-                        color = Color.Gray
-                    )
-                }
+                SubzEmptyState(message = "No subscriptions added yet.")
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
