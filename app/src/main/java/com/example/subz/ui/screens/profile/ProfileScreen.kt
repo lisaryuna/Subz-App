@@ -43,6 +43,7 @@ fun ProfileScreen(
     val isCloudSyncEnabled by profileViewModel.isSyncEnabled.collectAsState()
     val isSyncing by profileViewModel.isSyncing.collectAsState()
     val isReminderEnabled by profileViewModel.isReminderEnabled.collectAsState()
+    var showLogoutDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -144,10 +145,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             OutlinedButton(
-                onClick = {
-                    authViewModel.logout()
-                    onNavigateToLogin()
-                },
+                onClick = { showLogoutDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
@@ -163,6 +161,30 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Logout", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
+        }
+
+        if (showLogoutDialog) {
+            AlertDialog(
+                onDismissRequest = { showLogoutDialog = false },
+                title = { Text("Log Out", fontWeight = FontWeight.Bold, color = TextDarkNavy) },
+                text = { Text("Are yout sure you want to log out from your account?") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showLogoutDialog = false
+                            authViewModel.logout()
+                            onNavigateToLogin()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                    ) {
+                        Text("Log Out")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showLogoutDialog = false }) { Text("Cancel", color = Color.Gray) }
+                },
+                containerColor = Color.White
+            )
         }
     }
 }
