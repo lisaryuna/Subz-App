@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.theme.BackgroundLight
 import com.example.subz.ui.theme.IndicatorLightBlue
@@ -164,26 +165,17 @@ fun ProfileScreen(
         }
 
         if (showLogoutDialog) {
-            AlertDialog(
-                onDismissRequest = { showLogoutDialog = false },
-                title = { Text("Log Out", fontWeight = FontWeight.Bold, color = TextDarkNavy) },
-                text = { Text("Are yout sure you want to log out from your account?") },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showLogoutDialog = false
-                            authViewModel.logout()
-                            onNavigateToLogin()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
-                    ) {
-                        Text("Log Out")
-                    }
+            SubzAlertDialog(
+                title = "Log Out",
+                message = "Are you sure you want to log out from your account?",
+                confirmText = "Log Out",
+                isDestructive = false,
+                onConfirm = {
+                    showLogoutDialog = false
+                    authViewModel.logout()
+                    onNavigateToLogin()
                 },
-                dismissButton = {
-                    TextButton(onClick = { showLogoutDialog = false }) { Text("Cancel", color = Color.Gray) }
-                },
-                containerColor = Color.White
+                onDismiss = { showLogoutDialog = false }
             )
         }
     }
