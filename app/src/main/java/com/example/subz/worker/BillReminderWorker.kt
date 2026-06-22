@@ -22,15 +22,14 @@ class BillReminderWorker @AssistedInject constructor(
     private val subscriptionDao: SubscriptionDao
     ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
-        val subscriptions = subscriptionDao.getAllSubscriptionsOneShot()
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, 1)
         val tomorrowDate = DateFormatter.formatToDateOnly(calendar.time)
 
-        subscriptions.forEach { sub ->
-            if (sub.subscription.renewalDate == tomorrowDate) {
-                showNotification(sub.subscription.name, sub.subscription.price)
-            }
+        val tomorrowSubscriptions = subscriptionDao.getSubscriptionsByDateOneShot(tomorrowDate)
+
+        tomorrowSubscriptions.forEach { sub ->
+            showNotification(sub.subscription.name, sub.subscription.price)
         }
 
         return Result.success()
