@@ -2,6 +2,7 @@ package com.example.subz.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.repository.CloudSyncRepository
@@ -20,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val subscriptionDao: SubscriptionDao,
     private val cloudSyncRepository: CloudSyncRepository
 ) : ViewModel() {
-    val subscriptions: StateFlow<List<SubscriptionEntity>> =
+    val subscriptions: StateFlow<List<SubWithWallet>> =
         subscriptionDao.getAllSubscriptions()
             .stateIn(
                 scope = viewModelScope,
@@ -43,13 +44,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addSubscription(name: String, price: Double, renewalDate: String, paymentMethod: String) {
+    fun addSubscription(name: String, price: Double, renewalDate: String, walletId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val newSubscription = SubscriptionEntity(
                 name = name,
                 price = price,
                 renewalDate = renewalDate,
-                paymentMethod = paymentMethod
+                walletId = walletId
             )
             subscriptionDao.insertSubscription(newSubscription)
             triggerAutoSync()
@@ -70,7 +71,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getSubscriptionById(id: Int): Flow<SubscriptionEntity?> {
+    fun getSubscriptionById(id: Int): Flow<SubWithWallet?> {
         return subscriptionDao.getSubscriptionById(id)
     }
 }
