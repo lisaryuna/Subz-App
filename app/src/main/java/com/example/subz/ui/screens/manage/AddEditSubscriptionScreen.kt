@@ -20,7 +20,7 @@ import java.util.Date
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.subz.data.local.entity.SubscriptionEntity
+import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.data.local.entity.WalletEntity
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzButton
@@ -47,7 +47,7 @@ fun AddEditSubscriptionScreen(
         if (subscriptionId != null) {
             viewModel.getSubscriptionById(subscriptionId)
         } else {
-            flowOf<SubscriptionEntity?>(null)
+            flowOf<SubWithWallet?>(null)
         }
     }.collectAsState(initial = null)
 
@@ -55,7 +55,9 @@ fun AddEditSubscriptionScreen(
     var name by remember { mutableStateOf("") }
     var price by remember { mutableStateOf("") }
     var renewalDate by remember { mutableStateOf("") }
-    var paymentMethod by remember { mutableStateOf("") }
+
+    var selectedWalletId by remember { mutableStateOf<Int?>(null) }
+    var paymentMethodName by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     var showDatePicker by remember { mutableStateOf(false) }
@@ -65,12 +67,13 @@ fun AddEditSubscriptionScreen(
     var walletToDelete by remember { mutableStateOf<WalletEntity?>(null) }
 
     LaunchedEffect(subscriptionToEdit) {
-        subscriptionToEdit?.let { sub ->
-            name = sub.name
+        subscriptionToEdit?.let { data ->
+            name = data.subscription.name
             price =
-                if (sub.price % 1.0 == 0.0) sub.price.toInt().toString() else sub.price.toString()
-            renewalDate = sub.renewalDate
-            paymentMethod = sub.paymentMethod
+                if (data.subscription.price % 1.0 == 0.0) data.subscription.price.toInt().toString() else data.subscription.price.toString()
+            renewalDate = data.subscription.renewalDate
+            selectedWalletId = data.subscription.walletId
+            paymentMethodName = data.walletName
         }
     }
 
@@ -117,7 +120,7 @@ fun AddEditSubscriptionScreen(
             )
 
             SubzClickableField(
-                value = paymentMethod,
+                value = paymentMethodName,
                 label = "Payment Method",
                 trailingIcon = Icons.Default.KeyboardArrowDown,
                 onClick = { showWalletSelector = true }
@@ -138,7 +141,7 @@ fun AddEditSubscriptionScreen(
                 onClick = {
                     val parsedPrice = price.toDoubleOrNull()
 
-                    if (name.isBlank() || price.isBlank() || renewalDate.isBlank() || paymentMethod.isBlank()) {
+                    if (name.isBlank() || price.isBlank() || renewalDate.isBlank() || selectedWalletId == null) {
                         errorMessage = "All fields are required"
                     }
                     else if (parsedPrice == null || parsedPrice < 0.0) {
@@ -148,11 +151,11 @@ fun AddEditSubscriptionScreen(
                         errorMessage = null
                         if (isEditMode && subscriptionToEdit != null) {
                             viewModel.updateSubscription(
-                                subscriptionToEdit!!.copy(
+                                subscriptionToEdit!!.subscription.copy(
                                     name = name.trim(),
                                     price = parsedPrice,
                                     renewalDate = renewalDate.trim(),
-                                    paymentMethod = paymentMethod.trim()
+                                    walletId = selectedWalletId!!
                                 )
                             )
                         } else {
@@ -160,7 +163,7 @@ fun AddEditSubscriptionScreen(
                                 name = name.trim(),
                                 price = parsedPrice,
                                 renewalDate = renewalDate.trim(),
-                                paymentMethod = paymentMethod.trim()
+                                walletId = selectedWalletId!!
                             )
                         }
                         onNavigateBack()
@@ -192,8 +195,9 @@ fun AddEditSubscriptionScreen(
             WalletSelectorSheet(
                 wallets = wallets,
                 onDismiss = { showWalletSelector = false },
-                onWalletSelected = { selected ->
-                    paymentMethod = selected
+                onWalletSelected = { selectedWallet ->
+                    selectedWalletId = selectedWallet.id
+                    paymentMethodName = selectedWallet.name
                     showWalletSelector = false
                 },
                 onDeleteWallet = { walletToDelete = it },
@@ -224,6 +228,8 @@ fun AddEditSubscriptionScreen(
                 onConfirm = {
                     walletToDelete?.let { walletViewModel.deleteWallet(it) }
                     walletToDelete = null
+                    paymentMethodName = ""
+                    selectedWalletId = null
                 },
                 onDismiss = { walletToDelete = null}
             )
@@ -236,7 +242,7 @@ fun AddEditSubscriptionScreen(
 private fun WalletSelectorSheet(
     wallets: List<WalletEntity>,
     onDismiss: () -> Unit,
-    onWalletSelected: (String) -> Unit,
+    onWalletSelected: (WalletEntity) -> Unit,
     onDeleteWallet: (WalletEntity) -> Unit,
     onAddNewClick: () -> Unit
 ) {
@@ -263,7 +269,7 @@ private fun WalletSelectorSheet(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { onWalletSelected(wallet.name) }
+                                .clickable { onWalletSelected(wallet) }
                                 .padding(vertical = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
