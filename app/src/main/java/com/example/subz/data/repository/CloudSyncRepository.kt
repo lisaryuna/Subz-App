@@ -3,13 +3,12 @@ package com.example.subz.data.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.subz.data.local.dao.SubscriptionDao
+import com.example.subz.utils.DateFormatter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -48,7 +47,7 @@ class CloudSyncRepository @Inject constructor(
 
             userRef.setValue(updates).await()
 
-            val currentTime = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault()).format(Date())
+            val currentTime = DateFormatter.formatToDateTime(Date())
             prefs.edit().putString("last_sync_time", currentTime).apply()
 
             Result.success(currentTime)
