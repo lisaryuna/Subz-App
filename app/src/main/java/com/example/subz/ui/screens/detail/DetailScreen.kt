@@ -23,12 +23,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
-import com.example.subz.ui.components.formatRupiah
 import com.example.subz.ui.theme.AccentCoral
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
-import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
+import com.example.subz.utils.CurrencyFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,7 +101,7 @@ fun DetailScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = formatRupiah(sub.price),
+                                text = CurrencyFormatter.formatRupiah(sub.price),
                                 color = Color.White.copy(alpha = 0.9f),
                                 fontSize = 18.sp
                             )
