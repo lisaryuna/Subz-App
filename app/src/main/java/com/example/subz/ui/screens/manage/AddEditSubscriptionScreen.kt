@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.local.entity.WalletEntity
+import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzClickableField
 import com.example.subz.ui.components.SubzTextField
@@ -63,6 +64,7 @@ fun AddEditSubscriptionScreen(
     val datePickerState = rememberDatePickerState()
     var showWalletSelector by remember { mutableStateOf(false) }
     var showAddWalletDialog by remember { mutableStateOf(false) }
+    var walletToDelete by remember { mutableStateOf<WalletEntity?>(null) }
 
     LaunchedEffect(subscriptionToEdit) {
         subscriptionToEdit?.let { sub ->
@@ -197,7 +199,7 @@ fun AddEditSubscriptionScreen(
                     paymentMethod = selected
                     showWalletSelector = false
                 },
-                onDeleteWallet = { walletViewModel.deleteWallet(it) },
+                onDeleteWallet = { walletToDelete = it },
                 onAddNewClick = {
                     showWalletSelector = false
                     showAddWalletDialog = true
@@ -213,6 +215,20 @@ fun AddEditSubscriptionScreen(
                     showAddWalletDialog = false
                     showWalletSelector = true
                 }
+            )
+        }
+
+        if (walletToDelete != null) {
+            SubzAlertDialog(
+                title = "Delete Wallet",
+                message = "Are you sure you want to delete ${walletToDelete?.name}? This action cannot be undone.",
+                confirmText = "Delete",
+                isDestructive = true,
+                onConfirm = {
+                    walletToDelete?.let { walletViewModel.deleteWallet(it) }
+                    walletToDelete = null
+                },
+                onDismiss = { walletToDelete = null}
             )
         }
     }
