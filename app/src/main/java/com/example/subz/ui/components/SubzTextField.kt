@@ -1,6 +1,7 @@
 package com.example.subz.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -75,20 +76,27 @@ fun SubzClickableField(
     trailingIcon: ImageVector,
     onClick: () -> Unit
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = { },
-        label = { Text(label) },
-        readOnly = true,
-        trailingIcon = {
-            IconButton(onClick = onClick) {
-                Icon(imageVector = trailingIcon, contentDescription = "$label Icon")
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        shape = RoundedCornerShape(12.dp),
-        singleLine = true
-    )
+    Box(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = { },
+            label = { Text(label) },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = onClick) {
+                    Icon(imageVector = trailingIcon, contentDescription = "$label Icon")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() },
+            shape = RoundedCornerShape(12.dp),
+            singleLine = true
+        )
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .clickable { onClick() }
+        )
+    }
 }
