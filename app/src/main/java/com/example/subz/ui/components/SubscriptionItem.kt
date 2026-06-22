@@ -23,13 +23,8 @@ import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.R
-import java.text.NumberFormat
-import java.util.Locale
+import com.example.subz.utils.CurrencyFormatter
 
-fun formatRupiah(amount: Double): String {
-    val format = NumberFormat.getNumberInstance(Locale("id", "ID"))
-    return "Rp ${format.format(amount)}"
-}
 
 fun getServiceIcon(name: String): Int? {
     val lowerName = name.lowercase()
@@ -125,7 +120,7 @@ fun SubscriptionItem(
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
-                    text = formatRupiah(sub.price),
+                    text = CurrencyFormatter.formatRupiah(sub.price),
                     color = PrimaryBlue,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
