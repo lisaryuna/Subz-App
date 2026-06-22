@@ -3,6 +3,7 @@ package com.example.subz.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.AppDatabase
+import com.example.subz.data.repository.CloudSyncRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
@@ -22,7 +23,8 @@ sealed interface AuthState {
 }
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val cloudSyncRepository: CloudSyncRepository
 ) : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
@@ -68,7 +70,10 @@ class AuthViewModel @Inject constructor(
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        _authState.value = AuthState.Success(auth.currentUser)
+                        viewModelScope.launch(Dispatchers.IO) {
+                            cloudSyncRepository.restoreDataFromCloud()
+                            _authState.value = AuthState.Success(auth.currentUser)
+                        }
                     } else {
                         val errorMessage = task.exception?.localizedMessage ?: "Login failed. Please check your account."
                         _authState.value = AuthState.Error(errorMessage)
