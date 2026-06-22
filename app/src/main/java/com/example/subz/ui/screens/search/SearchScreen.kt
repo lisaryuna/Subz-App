@@ -34,11 +34,11 @@ fun SearchScreen(
     val subscriptions by viewModel.subscriptions.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("All") }
-    val filters = listOf("All") + subscriptions.map { it.paymentMethod }.distinct().filter { it.isNotBlank() }.sorted()
+    val filters = listOf("All") + subscriptions.map { it.walletName }.distinct().filter { it.isNotBlank() }.sorted()
 
-    val filteredSubscriptions = subscriptions.filter { sub ->
-        val matchesSearch = sub.name.contains(searchQuery, ignoreCase = true)
-        val matchesFilter = if (selectedFilter == "All") true else sub.paymentMethod == selectedFilter
+    val filteredSubscriptions = subscriptions.filter { data ->
+        val matchesSearch = data.subscription.name.contains(searchQuery, ignoreCase = true)
+        val matchesFilter = if (selectedFilter == "All") true else data.walletName == selectedFilter
         matchesSearch && matchesFilter
     }
 
@@ -107,10 +107,10 @@ fun SearchScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
-                items(filteredSubscriptions) { sub ->
+                items(filteredSubscriptions) { data ->
                     SubscriptionItem(
-                        sub = sub,
-                        onClick = { onNavigateToDetail(sub.id) }
+                        item = data,
+                        onClick = { onNavigateToDetail(data.subscription.id) }
                     )
                 }
             }
