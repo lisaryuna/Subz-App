@@ -2,10 +2,12 @@ package com.example.subz.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.subz.data.local.AppDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.userProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +21,9 @@ sealed interface AuthState {
     data class Error(val message: String) : AuthState
 }
 @HiltViewModel
-class AuthViewModel @Inject constructor() : ViewModel() {
+class AuthViewModel @Inject constructor(
+    private val database: AppDatabase
+) : ViewModel() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
@@ -74,8 +78,11 @@ class AuthViewModel @Inject constructor() : ViewModel() {
     }
 
     fun logout() {
-        auth.signOut()
-        _authState.value = AuthState.Idle
+        viewModelScope.launch(Dispatchers.IO) {
+            database.clearAllTables()
+            auth.signOut()
+            _authState.value = AuthState.Idle
+        }
     }
 
     fun resetState() {
