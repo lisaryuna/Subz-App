@@ -28,8 +28,8 @@ class BillReminderWorker @AssistedInject constructor(
         val tomorrowDate = DateFormatter.formatToDateOnly(calendar.time)
 
         subscriptions.forEach { sub ->
-            if (sub.renewalDate == tomorrowDate) {
-                showNotification(sub.name, sub.price)
+            if (sub.subscription.renewalDate == tomorrowDate) {
+                showNotification(sub.subscription.name, sub.subscription.price)
             }
         }
 
