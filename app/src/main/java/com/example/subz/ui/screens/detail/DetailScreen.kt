@@ -10,6 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -19,9 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.components.formatRupiah
 import com.example.subz.ui.theme.AccentCoral
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
+import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,6 +38,7 @@ fun DetailScreen(
     onNavigateToEdit: (Int) -> Unit
 ) {
     val subscription by viewModel.getSubscriptionById(subscriptionId).collectAsState(initial = null)
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -95,7 +101,7 @@ fun DetailScreen(
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "Rp ${sub.price}",
+                                text = formatRupiah(sub.price),
                                 color = Color.White.copy(alpha = 0.9f),
                                 fontSize = 18.sp
                             )
@@ -151,10 +157,7 @@ fun DetailScreen(
                     }
 
                     Button(
-                        onClick = {
-                            viewModel.deleteSubscription(sub)
-                            onNavigateBack()
-                        },
+                        onClick = { showDeleteDialog = true },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.buttonColors(containerColor = AccentCoral),
                         shape = RoundedCornerShape(12.dp)
@@ -164,6 +167,30 @@ fun DetailScreen(
                         Text("Delete")
                     }
                 }
+            }
+
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    title = { Text("Delete Subscription", fontWeight = FontWeight.Bold, color = TextDarkNavy) },
+                    text = { Text("Are you sure you want to delete ${sub.name}? This action cannot be undone.") },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.deleteSubscription(sub)
+                                showDeleteDialog = false
+                                onNavigateBack()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = AccentCoral)
+                        ) {
+                            Text("Delete")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteDialog = false}) { Text("Cancel", color = Color.Gray) }
+                    },
+                    containerColor = Color.White
+                )
             }
         }
     }
