@@ -10,11 +10,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.subz.R
 import com.example.subz.data.local.dao.SubscriptionDao
+import com.example.subz.utils.DateFormatter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 @HiltWorker
 class BillReminderWorker @AssistedInject constructor(
@@ -26,7 +25,7 @@ class BillReminderWorker @AssistedInject constructor(
         val subscriptions = subscriptionDao.getAllSubscriptionsOneShot()
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, 1)
-        val tomorrowDate = SimpleDateFormat("dd/MM/yyyy", Locale("id", "ID")).format(calendar.time)
+        val tomorrowDate = DateFormatter.formatToDateOnly(calendar.time)
 
         subscriptions.forEach { sub ->
             if (sub.renewalDate == tomorrowDate) {
