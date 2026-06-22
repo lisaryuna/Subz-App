@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.components.formatRupiah
 import com.example.subz.ui.theme.AccentCoral
@@ -170,26 +171,17 @@ fun DetailScreen(
             }
 
             if (showDeleteDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDeleteDialog = false },
-                    title = { Text("Delete Subscription", fontWeight = FontWeight.Bold, color = TextDarkNavy) },
-                    text = { Text("Are you sure you want to delete ${sub.name}? This action cannot be undone.") },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                viewModel.deleteSubscription(sub)
-                                showDeleteDialog = false
-                                onNavigateBack()
-                            },
-                            colors = ButtonDefaults.buttonColors(containerColor = AccentCoral)
-                        ) {
-                            Text("Delete")
-                        }
+                SubzAlertDialog(
+                    title = "Delete Subscription",
+                    message = "Are you sure you want to delete ${sub.name}? This action cannot be undone.",
+                    confirmText = "Delete",
+                    isDestructive = true,
+                    onConfirm = {
+                        viewModel.deleteSubscription(sub)
+                        showDeleteDialog = false
+                        onNavigateBack()
                     },
-                    dismissButton = {
-                        TextButton(onClick = { showDeleteDialog = false}) { Text("Cancel", color = Color.Gray) }
-                    },
-                    containerColor = Color.White
+                    onDismiss = { showDeleteDialog = false }
                 )
             }
         }
