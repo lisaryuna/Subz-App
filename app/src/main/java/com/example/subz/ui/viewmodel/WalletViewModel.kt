@@ -2,8 +2,8 @@ package com.example.subz.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.subz.data.local.dao.WalletDao
 import com.example.subz.data.local.entity.WalletEntity
+import com.example.subz.data.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,10 +14,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WalletViewModel @Inject constructor(
-    private val walletDao: WalletDao
+    private val walletRepository: WalletRepository
 ) : ViewModel() {
     val wallets: StateFlow<List<WalletEntity>> =
-        walletDao.getAllWallets()
+        walletRepository.getAllWallets()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -26,13 +26,13 @@ class WalletViewModel @Inject constructor(
 
     fun addWallet(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            walletDao.insertWallet(WalletEntity(name = name))
+            walletRepository.insertWallet(WalletEntity(name = name))
         }
     }
 
     fun deleteWallet(wallet: WalletEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            walletDao.deleteWallet(wallet)
+            walletRepository.deleteWallet(wallet)
         }
     }
 }
