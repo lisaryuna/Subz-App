@@ -3,9 +3,9 @@ package com.example.subz.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.SubWithWallet
-import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.repository.CloudSyncRepository
+import com.example.subz.data.repository.SubscriptionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +18,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val subscriptionDao: SubscriptionDao,
+    private val subscriptionRepository: SubscriptionRepository,
     private val cloudSyncRepository: CloudSyncRepository
 ) : ViewModel() {
     val subscriptions: StateFlow<List<SubWithWallet>> =
-        subscriptionDao.getAllSubscriptions()
+        subscriptionRepository.getAllSubscriptions()
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
             )
 
     val totalActivePrice: StateFlow<Double> =
-        subscriptionDao.getTotalActiveSubscriptions()
+        subscriptionRepository.getTotalActiveSubscriptions()
             .map { it ?: 0.0}
             .stateIn(
                 scope = viewModelScope,
@@ -52,26 +52,26 @@ class HomeViewModel @Inject constructor(
                 renewalDate = renewalDate,
                 walletId = walletId
             )
-            subscriptionDao.insertSubscription(newSubscription)
+            subscriptionRepository.insertSubscription(newSubscription)
             triggerAutoSync()
         }
     }
 
     fun updateSubscription(subscriptionEntity: SubscriptionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            subscriptionDao.updateSubscription(subscriptionEntity)
+            subscriptionRepository.updateSubscription(subscriptionEntity)
             triggerAutoSync()
         }
     }
 
     fun deleteSubscription(subscriptionEntity: SubscriptionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            subscriptionDao.deleteSubscription(subscriptionEntity)
+            subscriptionRepository.deleteSubscription(subscriptionEntity)
             triggerAutoSync()
         }
     }
 
     fun getSubscriptionById(id: Int): Flow<SubWithWallet?> {
-        return subscriptionDao.getSubscriptionById(id)
+        return subscriptionRepository.getSubscriptionById(id)
     }
 }
