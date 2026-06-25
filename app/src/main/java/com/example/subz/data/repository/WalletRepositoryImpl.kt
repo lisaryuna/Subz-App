@@ -2,23 +2,24 @@ package com.example.subz.data.repository
 
 import com.example.subz.data.local.dao.WalletDao
 import com.example.subz.data.local.entity.WalletEntity
+import com.example.subz.domain.repository.WalletRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class WalletRepository @Inject constructor(
+class WalletRepositoryImpl @Inject constructor(
     private val walletDao: WalletDao
-) {
-    fun getAllWallets(): Flow<List<WalletEntity>> {
+): WalletRepository {
+    override fun getAllWallets(): Flow<List<WalletEntity>> {
         return walletDao.getAllWallets()
     }
 
-    fun insertWallet(wallet: WalletEntity) {
+    override fun insertWallet(wallet: WalletEntity) {
         walletDao.insertWallet(wallet)
     }
 
-    fun deleteWallet(wallet: WalletEntity) {
+    override fun deleteWallet(wallet: WalletEntity) {
         walletDao.deleteWallet(wallet)
     }
 }
