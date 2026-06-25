@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.repository.CloudSyncRepository
-import com.example.subz.data.repository.SubscriptionRepository
+import com.example.subz.domain.repository.SubscriptionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
