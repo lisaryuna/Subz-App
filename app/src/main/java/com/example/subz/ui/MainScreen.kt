@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.example.subz.ui.components.BottomNavigationBar
 import com.example.subz.ui.navigation.Screen
 import com.example.subz.ui.screens.detail.DetailScreen
@@ -134,7 +135,9 @@ fun MainScreen(authViewModel: AuthViewModel = hiltViewModel()) {
                     onNavigateBack = { navController.popBackStack()}
                 )
             }
-            composable(Screen.DetailSubscription.route) { backStackEntry ->
+            composable(
+                Screen.DetailSubscription.route,
+                deepLinks = listOf(navDeepLink { uriPattern = "subz://detail/{id}" })) { backStackEntry ->
                 val idString = backStackEntry.arguments?.getString("id")
                 val id = idString?.toIntOrNull() ?: 0
 
