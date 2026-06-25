@@ -3,7 +3,7 @@ package com.example.subz.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.entity.WalletEntity
-import com.example.subz.data.repository.WalletRepository
+import com.example.subz.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
