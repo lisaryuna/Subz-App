@@ -15,6 +15,7 @@ import com.example.subz.R
 import com.example.subz.data.local.dao.SubscriptionDao
 import com.example.subz.utils.CurrencyFormatter
 import com.example.subz.utils.DateFormatter
+import com.google.firebase.auth.FirebaseAuth
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import java.util.Calendar
@@ -26,6 +27,10 @@ class BillReminderWorker @AssistedInject constructor(
     private val subscriptionDao: SubscriptionDao
     ) : CoroutineWorker(context, workerParams) {
     override suspend fun doWork(): Result {
+        if (FirebaseAuth.getInstance().currentUser == null) {
+            return Result.success()
+        }
+
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.DAY_OF_YEAR, 1)
         val tomorrowDate = DateFormatter.formatToDateOnly(calendar.time)
