@@ -5,8 +5,8 @@ import com.example.subz.data.local.entity.SubscriptionEntity
 import kotlinx.coroutines.flow.Flow
 
 interface SubscriptionRepository {
-    fun getAllSubscriptions(): Flow<List<SubWithWallet>>
-    fun getTotalActiveSubscriptions(): Flow<Double?>
+    fun getAllSubscriptions(userId: String): Flow<List<SubWithWallet>>
+    fun getTotalActiveSubscriptions(userId: String): Flow<Double?>
     fun getSubscriptionById(id: Int): Flow<SubWithWallet?>
     fun insertSubscription(subscription: SubscriptionEntity)
     fun updateSubscription(subscription: SubscriptionEntity)

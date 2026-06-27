@@ -11,8 +11,8 @@ import javax.inject.Singleton
 class WalletRepositoryImpl @Inject constructor(
     private val walletDao: WalletDao
 ): WalletRepository {
-    override fun getAllWallets(): Flow<List<WalletEntity>> {
-        return walletDao.getAllWallets()
+    override fun getAllWallets(userId: String): Flow<List<WalletEntity>> {
+        return walletDao.getAllWallets(userId)
     }
 
     override fun insertWallet(wallet: WalletEntity) {

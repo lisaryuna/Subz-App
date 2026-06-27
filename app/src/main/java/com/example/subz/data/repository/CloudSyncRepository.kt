@@ -43,7 +43,7 @@ class CloudSyncRepository @Inject constructor(
         val userId = user.uid
 
         return try {
-            val wallets = walletDao.getAllWalletsOneShot()
+            val wallets = walletDao.getAllWalletsOneShot(userId)
             val walletsRef = database.reference.child("users").child(userId).child("wallets")
             val walletUpdates = mutableMapOf<String, Any>()
             wallets.forEach { wallet ->
@@ -51,7 +51,7 @@ class CloudSyncRepository @Inject constructor(
             }
             walletsRef.setValue(walletUpdates).await()
 
-            val subscriptions = subscriptionDao.getAllSubscriptionsOneShot()
+            val subscriptions = subscriptionDao.getAllSubscriptionsOneShot(userId)
             val subsRef = database.reference.child("users").child(userId).child("subscriptions")
             val subsUpdates = mutableMapOf<String, Any>()
             subscriptions.forEach { sub ->
@@ -76,13 +76,13 @@ class CloudSyncRepository @Inject constructor(
             val walletsSnapshot = database.reference.child("users").child(userId).child("wallets").get().await()
             walletsSnapshot.children.forEach { child ->
                 val wallet = child.getValue(WalletEntity::class.java)
-                if (wallet != null) walletDao.insertWallet(wallet)
+                if (wallet != null) walletDao.insertWallet(wallet.copy(userId = userId))
             }
 
             val subsSnapshot = database.reference.child("users").child(userId).child("subscriptions").get().await()
             subsSnapshot.children.forEach { child ->
                 val sub = child.getValue(SubscriptionEntity::class.java)
-                if (sub != null) subscriptionDao.insertSubscription(sub)
+                if (sub != null) subscriptionDao.insertSubscription(sub.copy(userId = userId))
             }
 
             Result.success(Unit)

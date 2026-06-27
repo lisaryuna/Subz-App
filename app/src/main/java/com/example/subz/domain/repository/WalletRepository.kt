@@ -4,7 +4,7 @@ import com.example.subz.data.local.entity.WalletEntity
 import kotlinx.coroutines.flow.Flow
 
 interface WalletRepository {
-    fun getAllWallets(): Flow<List<WalletEntity>>
+    fun getAllWallets(userId: String): Flow<List<WalletEntity>>
     fun insertWallet(wallet: WalletEntity)
     fun deleteWallet(wallet: WalletEntity)
 }

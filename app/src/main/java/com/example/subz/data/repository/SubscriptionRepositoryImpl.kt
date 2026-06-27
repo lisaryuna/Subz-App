@@ -12,12 +12,12 @@ import javax.inject.Singleton
 class SubscriptionRepositoryImpl @Inject constructor(
     private val subscriptionDao: SubscriptionDao
 ): SubscriptionRepository {
-    override fun getAllSubscriptions(): Flow<List<SubWithWallet>> {
-        return subscriptionDao.getAllSubscriptions()
+    override fun getAllSubscriptions(userId: String): Flow<List<SubWithWallet>> {
+        return subscriptionDao.getAllSubscriptions(userId)
     }
 
-    override fun getTotalActiveSubscriptions(): Flow<Double?> {
-        return subscriptionDao.getTotalActiveSubscriptions()
+    override fun getTotalActiveSubscriptions(userId: String): Flow<Double?> {
+        return subscriptionDao.getTotalActiveSubscriptions(userId)
     }
 
     override fun getSubscriptionById(id: Int): Flow<SubWithWallet?> {
