@@ -6,6 +6,7 @@ import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.data.local.entity.SubscriptionEntity
 import com.example.subz.data.repository.CloudSyncRepository
 import com.example.subz.domain.repository.SubscriptionRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -21,8 +22,10 @@ class HomeViewModel @Inject constructor(
     private val subscriptionRepository: SubscriptionRepository,
     private val cloudSyncRepository: CloudSyncRepository
 ) : ViewModel() {
+    private val auth = FirebaseAuth.getInstance()
+    private val currentUserId = auth.currentUser?.uid ?: ""
     val subscriptions: StateFlow<List<SubWithWallet>> =
-        subscriptionRepository.getAllSubscriptions()
+        subscriptionRepository.getAllSubscriptions(currentUserId)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -30,7 +33,7 @@ class HomeViewModel @Inject constructor(
             )
 
     val totalActivePrice: StateFlow<Double> =
-        subscriptionRepository.getTotalActiveSubscriptions()
+        subscriptionRepository.getTotalActiveSubscriptions(currentUserId)
             .map { it ?: 0.0}
             .stateIn(
                 scope = viewModelScope,
@@ -50,7 +53,8 @@ class HomeViewModel @Inject constructor(
                 name = name,
                 price = price,
                 renewalDate = renewalDate,
-                walletId = walletId
+                walletId = walletId,
+                userId = currentUserId
             )
             subscriptionRepository.insertSubscription(newSubscription)
             triggerAutoSync()

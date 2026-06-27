@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.entity.WalletEntity
 import com.example.subz.domain.repository.WalletRepository
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,8 +17,10 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(
     private val walletRepository: WalletRepository
 ) : ViewModel() {
+    private val auth = FirebaseAuth.getInstance()
+    private val currentUserId = auth.currentUser?.uid ?: ""
     val wallets: StateFlow<List<WalletEntity>> =
-        walletRepository.getAllWallets()
+        walletRepository.getAllWallets(currentUserId)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
@@ -26,7 +29,12 @@ class WalletViewModel @Inject constructor(
 
     fun addWallet(name: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            walletRepository.insertWallet(WalletEntity(name = name))
+            walletRepository.insertWallet(
+                WalletEntity(
+                name = name,
+                userId = currentUserId
+                )
+            )
         }
     }
 
