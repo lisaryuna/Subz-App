@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class WalletEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String
+    val userId: String = "",
+    val name: String = ""
 )

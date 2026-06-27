@@ -20,8 +20,9 @@ import androidx.room.PrimaryKey
 data class SubscriptionEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val name: String,
-    val price : Double,
-    val renewalDate: String,
-    val walletId: Int
+    val userId: String = "",
+    val name: String = "",
+    val price : Double = 0.0,
+    val renewalDate: String = "",
+    val walletId: Int = 0
 )

@@ -16,10 +16,10 @@ interface WalletDao {
     @Delete
     fun deleteWallet(wallet: WalletEntity)
 
-    @Query("SELECT * FROM wallets ORDER BY name ASC")
-    fun getAllWallets(): Flow<List<WalletEntity>>
+    @Query("SELECT * FROM wallets WHERE userId = :userId ORDER BY name ASC")
+    fun getAllWallets(userId: String): Flow<List<WalletEntity>>
 
     @JvmSuppressWildcards
-    @Query("SELECT * FROM wallets")
-    suspend fun getAllWalletsOneShot(): List<WalletEntity>
+    @Query("SELECT * FROM wallets WHERE userId = :userId")
+    suspend fun getAllWalletsOneShot(userId: String): List<WalletEntity>
 }

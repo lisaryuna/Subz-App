@@ -28,11 +28,12 @@ interface SubscriptionDao {
     @Query("""
         SELECT subscriptions.*, wallets.name AS walletName
         FROM subscriptions INNER JOIN wallets on subscriptions.walletId = wallets.id
+        WHERE subscriptions.userId = :userId
         ORDER BY subscriptions.renewalDate ASC""")
-    fun getAllSubscriptions(): Flow<List<SubWithWallet>>
+    fun getAllSubscriptions(userId: String): Flow<List<SubWithWallet>>
 
-    @Query("SELECT SUM(price) FROM subscriptions")
-    fun getTotalActiveSubscriptions(): Flow<Double?>
+    @Query("SELECT SUM(price) FROM subscriptions WHERE userId = :userId")
+    fun getTotalActiveSubscriptions(userId: String): Flow<Double?>
 
     @Query("""
         SELECT subscriptions.*, wallets.name AS walletName 
@@ -43,8 +44,9 @@ interface SubscriptionDao {
     @JvmSuppressWildcards
     @Query("""
         SELECT subscriptions.*, wallets.name AS walletName
-        FROM subscriptions INNER JOIN wallets ON subscriptions.walletId = wallets.id""")
-    suspend fun getAllSubscriptionsOneShot(): List<SubWithWallet>
+        FROM subscriptions INNER JOIN wallets ON subscriptions.walletId = wallets.id
+        WHERE subscriptions.userId = :userId""")
+    suspend fun getAllSubscriptionsOneShot(userId: String): List<SubWithWallet>
 
     @JvmSuppressWildcards
     @Query("""
