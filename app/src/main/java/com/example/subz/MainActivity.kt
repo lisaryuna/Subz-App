@@ -1,18 +1,14 @@
 package com.example.subz
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.subz.ui.MainScreen
@@ -55,7 +51,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun scheduleBillReminder() {
-        val prefs = getSharedPreferences("subz_pref", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("subz_pref", MODE_PRIVATE)
         val isReminderEnabled = prefs.getBoolean("reminder_enabled", true)
 
         if (isReminderEnabled) {
