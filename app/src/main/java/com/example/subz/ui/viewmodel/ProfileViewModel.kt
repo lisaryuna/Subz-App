@@ -5,6 +5,8 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.subz.data.repository.CloudSyncRepository
@@ -62,6 +64,19 @@ class ProfileViewModel @Inject constructor(
         } else {
             workManager.cancelUniqueWork("SubzBillReminderWork")
         }
+    }
+
+    fun triggerDemoReminder() {
+        val workManager = WorkManager.getInstance(context)
+        val demoRequest = OneTimeWorkRequestBuilder<BillReminderWorker>()
+            .setInitialDelay(3, TimeUnit.SECONDS)
+            .build()
+
+        workManager.enqueueUniqueWork(
+            "DemoSubzWork",
+            ExistingWorkPolicy.REPLACE,
+            demoRequest
+        )
     }
 
     private fun performManualSync() {

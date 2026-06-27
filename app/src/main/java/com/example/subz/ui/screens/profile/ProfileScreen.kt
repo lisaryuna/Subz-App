@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
@@ -133,6 +134,21 @@ fun ProfileScreen(
                         }
                     )
                     HorizontalDivider(color = BackgroundLight)
+
+                    SettingsRow(
+                        icon = Icons.Default.PlayArrow,
+                        title = "Notification Simulation",
+                        subtitle = "Trigger H-1 reminder in 10 seconds",
+                        content = {
+                            TextButton(
+                                onClick = { profileViewModel.triggerDemoReminder() }
+                            ) {
+                                Text("Start", color = PrimaryBlue, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    )
+                    HorizontalDivider(color = BackgroundLight)
+
                     SettingsRow(
                         icon = Icons.Outlined.Info,
                         title = "Version",
