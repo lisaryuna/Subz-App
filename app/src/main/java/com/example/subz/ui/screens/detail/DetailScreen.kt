@@ -1,5 +1,6 @@
 package com.example.subz.ui.screens.detail
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
+import com.example.subz.ui.components.getServiceIcon
 import com.example.subz.ui.theme.AccentCoral
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
@@ -57,6 +60,7 @@ fun DetailScreen(
         } else {
             val sub = subscriptionData!!.subscription
             val paymentMethodName = subscriptionData!!.walletName
+            val iconRes = remember(sub.name) { getServiceIcon(sub.name) }
 
             Column(
                 modifier = Modifier
@@ -87,12 +91,20 @@ fun DetailScreen(
                                     .background(Color.White, shape = RoundedCornerShape(50)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = sub.name.take(1).uppercase(),
-                                    color = PrimaryBlue,
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                if (iconRes != null) {
+                                    Image(
+                                        painterResource(id = iconRes),
+                                        contentDescription = "${sub.name} Logo",
+                                        modifier = Modifier.size(42.dp)
+                                    )
+                                } else {
+                                    Text(
+                                        text = sub.name.take(1).uppercase(),
+                                        color = PrimaryBlue,
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
