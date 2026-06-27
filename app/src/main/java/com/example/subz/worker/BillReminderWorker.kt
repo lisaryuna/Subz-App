@@ -13,6 +13,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.subz.R
 import com.example.subz.data.local.dao.SubscriptionDao
+import com.example.subz.utils.CurrencyFormatter
 import com.example.subz.utils.DateFormatter
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -39,6 +40,7 @@ class BillReminderWorker @AssistedInject constructor(
     }
 
     private fun showNotification(serviceName: String, price: Double, notificationId: Int) {
+        val formattedPrice = CurrencyFormatter.formatRupiah(price)
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "bill_reminder_channel"
 
@@ -67,7 +69,7 @@ class BillReminderWorker @AssistedInject constructor(
 
         val notification = NotificationCompat.Builder(context, channelId)
             .setContentTitle("Billing Reminder!")
-            .setContentText("Heads up! Your $serviceName subscription (Rp $price) renews tomorrow. Keep it or cancel it?")
+            .setContentText("Heads up! Your $serviceName subscription ($formattedPrice) renews tomorrow. Keep it or cancel it?")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
