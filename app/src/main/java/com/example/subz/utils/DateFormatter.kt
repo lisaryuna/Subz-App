@@ -18,7 +18,7 @@ object DateFormatter {
             val formatter = SimpleDateFormat("dd MMM yyyy", defaultLocale)
             val date = parser.parse(dateString)
             if (date != null) formatter.format(date) else dateString
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             dateString
         }
     }
