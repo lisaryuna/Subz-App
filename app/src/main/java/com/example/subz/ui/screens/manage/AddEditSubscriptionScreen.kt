@@ -27,7 +27,7 @@ import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzClickableField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.components.SubzTopAppBar
-import com.example.subz.ui.theme.AccentCoral
+import com.example.subz.ui.theme.DangerRed
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
@@ -130,7 +130,7 @@ fun AddEditSubscriptionScreen(
             if (errorMessage != null) {
                 Text(
                     text = errorMessage!!,
-                    color = AccentCoral,
+                    color = DangerRed,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )

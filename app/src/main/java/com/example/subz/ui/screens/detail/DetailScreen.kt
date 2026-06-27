@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.components.getServiceIcon
-import com.example.subz.ui.theme.AccentCoral
+import com.example.subz.ui.theme.DangerRed
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
 import com.example.subz.ui.viewmodel.HomeViewModel
@@ -173,7 +173,7 @@ fun DetailScreen(
                     Button(
                         onClick = { showDeleteDialog = true },
                         modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = AccentCoral),
+                        colors = ButtonDefaults.buttonColors(containerColor = DangerRed),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete", modifier = Modifier.size(18.dp))

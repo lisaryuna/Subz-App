@@ -13,13 +13,12 @@ private val OceanBreezeColorScheme = lightColorScheme(
     surface = Color.White,
     onBackground = TextDarkNavy,
     onSurface = TextDarkNavy,
-    error = AccentCoral,
+    error = DangerRed,
     onError = Color.White
 )
 
 @Composable
 fun SubzTheme(
-    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     MaterialTheme(

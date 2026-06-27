@@ -8,7 +8,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.subz.ui.theme.AccentCoral
+import com.example.subz.ui.theme.DangerRed
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 
@@ -30,7 +30,7 @@ fun SubzAlertDialog(
             Button(
                 onClick = onConfirm,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isDestructive) AccentCoral else PrimaryBlue
+                    containerColor = if (isDestructive) DangerRed else PrimaryBlue
                 )
             ) {
                 Text(confirmText)
