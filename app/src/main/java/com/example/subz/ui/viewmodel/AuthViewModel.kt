@@ -84,6 +84,7 @@ class AuthViewModel @Inject constructor(
 
     fun logout() {
         viewModelScope.launch(Dispatchers.IO) {
+            cloudSyncRepository.backupDataToCloud()
             database.clearAllTables()
             auth.signOut()
             _authState.value = AuthState.Idle

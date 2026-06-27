@@ -31,7 +31,7 @@ class CloudSyncRepository @Inject constructor(
     }
 
     fun isAutoSyncEnabled(): Boolean {
-        return prefs.getBoolean("auto_sync_enabled", false)
+        return prefs.getBoolean("auto_sync_enabled", true)
     }
 
     fun setAutoSyncEnabled(enabled: Boolean) {
