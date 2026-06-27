@@ -138,7 +138,7 @@ fun ProfileScreen(
                     SettingsRow(
                         icon = Icons.Default.PlayArrow,
                         title = "Notification Simulation",
-                        subtitle = "Trigger H-1 reminder in 10 seconds",
+                        subtitle = "Trigger H-1 reminder in 3 seconds",
                         content = {
                             TextButton(
                                 onClick = { profileViewModel.triggerDemoReminder() }
