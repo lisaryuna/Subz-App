@@ -15,6 +15,7 @@ import com.example.subz.ui.MainScreen
 import com.example.subz.ui.theme.SubzTheme
 import com.example.subz.worker.BillReminderWorker
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Calendar.*
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -55,9 +56,13 @@ class MainActivity : ComponentActivity() {
         val isReminderEnabled = prefs.getBoolean("reminder_enabled", true)
 
         if (isReminderEnabled) {
+            val delay = calculateInitialDelayTo8AM()
+
             val reminderRequest = PeriodicWorkRequestBuilder<BillReminderWorker>(
                 24, TimeUnit.HOURS
-            ).build()
+            )
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .build()
 
             WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
                 "SubzBillReminderWork",
@@ -65,5 +70,22 @@ class MainActivity : ComponentActivity() {
                 reminderRequest
             )
         }
+    }
+
+    private fun calculateInitialDelayTo8AM(): Long {
+        val currentTime = System.currentTimeMillis()
+        val calendar = getInstance().apply {
+            timeInMillis = currentTime
+            set(HOUR_OF_DAY, 8)
+            set(MINUTE, 0)
+            set(SECOND, 0)
+            set(MILLISECOND, 0)
+        }
+
+        if (calendar.timeInMillis <= currentTime) {
+            calendar.add(DAY_OF_YEAR, 1)
+        }
+
+        return calendar.timeInMillis - currentTime
     }
 }
