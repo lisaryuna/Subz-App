@@ -12,10 +12,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.ui.components.AuthFooter
 import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzButton
@@ -51,15 +53,15 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center
     ) {
         AuthHeader(
-            title = "Create Account",
-            subtitle = "Join Subz to start managing your\nsubscriptions."
+            title = stringResource(id = R.string.register_title),
+            subtitle = stringResource(id = R.string.register_subtitle)
         )
 
         SubzTextField(
             value = fullName,
             onValueChange = { fullName = it },
-            label = "Full Name",
-            placeholder = "John Doe",
+            label = stringResource(id = R.string.full_name_label),
+            placeholder = stringResource(id = R.string.full_name_placeholder),
             leadingIcon = Icons.Default.Person,
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -67,8 +69,8 @@ fun RegisterScreen(
         SubzTextField(
             value = email,
             onValueChange = { email = it },
-            label = "Email",
-            placeholder = "john@example.com",
+            label = stringResource(id = R.string.email_label),
+            placeholder = stringResource(id = R.string.email_placeholder),
             leadingIcon = Icons.Default.Email,
             keyboardType = KeyboardType.Email
         )
@@ -77,7 +79,7 @@ fun RegisterScreen(
         SubzPasswordField(
             value = password,
             onValueChange = { password = it },
-            label = "Password",
+            label = stringResource(id = R.string.password_label),
             leadingIcon = Icons.Default.Lock
         )
         Spacer(modifier = Modifier.height(32.dp))
@@ -92,15 +94,15 @@ fun RegisterScreen(
         }
 
         SubzButton(
-            text = "Register",
+            text = stringResource(id = R.string.register_title),
             isLoading = authState is AuthState.Loading,
             onClick = { viewModel.register(fullName, email, password) }
         )
         Spacer(modifier = Modifier.height(24.dp))
 
         AuthFooter(
-            questionText = "Already have an account? ",
-            actionText = "Log In",
+            questionText = stringResource(id = R.string.already_have_account),
+            actionText = stringResource(id = R.string.login_title),
             onActionClick = onNavigateToLogin
         )
     }

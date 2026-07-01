@@ -11,10 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.ui.components.AuthFooter
 import com.example.subz.ui.components.AuthHeader
 import com.example.subz.ui.components.SubzButton
@@ -49,15 +51,15 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         AuthHeader(
-            title = "Log In",
-            subtitle = "Welcome back! Enter your details to access\nyour account."
+            title = stringResource(id = R.string.login_title),
+            subtitle = stringResource(id = R.string.login_subtitle)
         )
 
         SubzTextField(
             value = email,
             onValueChange = { email = it },
-            label = "Email",
-            placeholder = "john@example.com",
+            label = stringResource(id = R.string.email_label),
+            placeholder = stringResource(id = R.string.email_placeholder),
             leadingIcon = Icons.Default.Email,
             keyboardType = KeyboardType.Email
         )
@@ -66,7 +68,7 @@ fun LoginScreen(
         SubzPasswordField(
             value = password,
             onValueChange = { password = it },
-            label = "Password",
+            label = stringResource(id = R.string.password_label),
             leadingIcon = Icons.Default.Lock
         )
         Spacer(modifier = Modifier.height(32.dp))
@@ -81,15 +83,15 @@ fun LoginScreen(
         }
 
         SubzButton(
-            text = "Login",
+            text = stringResource(id = R.string.login_title),
             isLoading = authState is AuthState.Loading,
             onClick = { viewModel.login(email, password) }
         )
         Spacer(modifier = Modifier.height(24.dp))
 
         AuthFooter(
-            questionText = "New to Subz? ",
-            actionText = "Create an account",
+            questionText = stringResource(id = R.string.new_to_subz),
+            actionText = stringResource(id = R.string.create_account),
             onActionClick = onNavigateToRegister
         )
     }

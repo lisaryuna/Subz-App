@@ -17,10 +17,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.ui.components.SubscriptionItem
 import com.example.subz.ui.components.SubzEmptyState
 import com.example.subz.ui.theme.BackgroundLight
@@ -59,7 +61,7 @@ fun SearchScreen(
             value = searchQuery,
             onValueChange = { searchQuery = it},
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Search subscription...", color = Color.Gray)},
+            placeholder = { Text(stringResource(id = R.string.search_placeholder), color = Color.Gray)},
             leadingIcon = {
                 Icon(Icons.Outlined.Search, contentDescription = "Search", tint = PrimaryBlue)
             },
@@ -108,7 +110,7 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         if (filteredSubscriptions.isEmpty()) {
-            SubzEmptyState(message = "No subscriptions found.")
+            SubzEmptyState(message = stringResource(id = R.string.no_subscriptions_found))
         } else {
             LazyColumn(
                 state = resultState,

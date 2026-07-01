@@ -1,3 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Subz</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+
+    <string name="login_title">Log In</string>
+    <string name="login_subtitle">Welcome back! Enter your details to access\nyour account.</string>
+    <string name="register_title">Create Account</string>
+    <string name="register_subtitle">Join Subz to start managing your\nsubscriptions.</string>
+    <string name="email_label">Email</string>
+    <string name="email_placeholder">john@example.com</string>
+    <string name="password_label">Password</string>
+    <string name="full_name_label">Full Name</string>
+    <string name="full_name_placeholder">John Doe</string>
+    <string name="new_to_subz">New to Subz? </string>
+    <string name="create_account">Create an account</string>
+    <string name="already_have_account">Already have an account? </string>
+
+    <string name="total_active_subscriptions">Total Active Subscriptions</string>
+    <string name="active_count">Active: %1$d</string>
+    <string name="my_subscriptions">My Subscriptions</string>
+    <string name="no_subscriptions_yet">No subscriptions added yet.</string>
+
+    <string name="search_placeholder">Search subscription...</string>
+    <string name="filter_all">All</string>
+    <string name="no_subscriptions_found">No subscriptions found.</string>
+
+    <string name="cloud_sync">Cloud Sync</string>
+    <string name="syncing">Syncing to cloud...</string>
+    <string name="last_backed_up">Last backed up: %1$s</string>
+    <string name="bill_reminder">H-1 Bill Reminder</string>
+    <string name="notification_simulation">Notification Simulation</string>
+    <string name="trigger_reminder_desc">Trigger H-1 reminder in 3 seconds</string>
+    <string name="start">Start</string>
+    <string name="version">Version</string>
+    <string name="logout_title">Log Out</string>
+    <string name="logout_message">Are you sure you want to log out from your account?</string>
+    <string name="error_message">Error: %1$s</string>
 </resources>

@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.theme.BackgroundLight
@@ -51,7 +53,7 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            SubzTopAppBar(title = "Subz")
+            SubzTopAppBar(title = stringResource(id = R.string.app_name))
         }
     ) { innerPadding ->
         Column(
@@ -101,8 +103,8 @@ fun ProfileScreen(
                 Column {
                     SettingsRow(
                         icon = Icons.Outlined.Cloud,
-                        title = "Cloud Sync",
-                        subtitle = if (isSyncing) "Syncing to cloud..." else "Last backed up: $lastSyncTime",
+                        title = stringResource(id = R.string.cloud_sync),
+                        subtitle = if (isSyncing) stringResource(id = R.string.syncing) else stringResource(id = R.string.last_backed_up, lastSyncTime),
                         content = {
                             if (isSyncing) {
                                 CircularProgressIndicator(
@@ -124,7 +126,7 @@ fun ProfileScreen(
                     HorizontalDivider(color = BackgroundLight)
                     SettingsRow(
                         icon = Icons.Outlined.Notifications,
-                        title = "H-1 Bill Reminder",
+                        title = stringResource(id = R.string.bill_reminder),
                         content = {
                             Switch(
                                 checked = isReminderEnabled,
@@ -140,13 +142,13 @@ fun ProfileScreen(
 
                     SettingsRow(
                         icon = Icons.Default.PlayArrow,
-                        title = "Notification Simulation",
-                        subtitle = "Trigger H-1 reminder in 3 seconds",
+                        title = stringResource(id = R.string.notification_simulation),
+                        subtitle = stringResource(id = R.string.trigger_reminder_desc),
                         content = {
                             TextButton(
                                 onClick = { profileViewModel.triggerDemoReminder() }
                             ) {
-                                Text("Start", color = PrimaryBlue, fontWeight = FontWeight.Bold)
+                                Text(stringResource(id = R.string.start), color = PrimaryBlue, fontWeight = FontWeight.Bold)
                             }
                         }
                     )
@@ -154,7 +156,7 @@ fun ProfileScreen(
 
                     SettingsRow(
                         icon = Icons.Outlined.Info,
-                        title = "Version",
+                        title = stringResource(id = R.string.version),
                         content = {
                             Text("v1.0.0", color = Color.Gray, fontSize = 14.sp)
                         }
@@ -179,15 +181,15 @@ fun ProfileScreen(
                     modifier = Modifier.size(20.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Logout", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(id = R.string.logout_title), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
         }
 
         if (showLogoutDialog) {
             SubzAlertDialog(
-                title = "Log Out",
-                message = "Are you sure you want to log out from your account?",
-                confirmText = "Log Out",
+                title = stringResource(id = R.string.logout_title),
+                message = stringResource(id = R.string.logout_message),
+                confirmText = stringResource(id = R.string.logout_title),
                 isDestructive = false,
                 onConfirm = {
                     showLogoutDialog = false

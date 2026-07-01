@@ -14,9 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.subz.R
 import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.SecondaryLightBlue
@@ -43,7 +45,7 @@ fun HomeStatsCard(totalActivePrice: Double, activeCount: Int) {
         ) {
             Column {
                 Text(
-                    text = "Total Active Subscriptions",
+                    text = stringResource(id = R.string.total_active_subscriptions),
                     color = Color.White.copy(alpha = 0.9f),
                     fontSize = 14.sp
                 )
@@ -69,7 +71,7 @@ fun HomeStatsCard(totalActivePrice: Double, activeCount: Int) {
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "Active: $activeCount",
+                            text = stringResource(id = R.string.active_count, activeCount),
                             color = Color.White,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -95,7 +97,7 @@ fun HomeSubscriptionList(
     onNavigateToDetail: (Int) -> Unit
 ) {
     if (subscriptions.isEmpty()) {
-        SubzEmptyState(message = "No subscriptions added yet.")
+        SubzEmptyState(message = stringResource(id = R.string.no_subscriptions_yet))
     } else {
         LazyColumn(
             state = listState,
