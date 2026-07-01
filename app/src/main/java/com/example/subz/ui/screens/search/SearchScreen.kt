@@ -27,15 +27,17 @@ import com.example.subz.ui.theme.BackgroundLight
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
+import com.example.subz.ui.viewmodel.UiState
 
 @Composable
 fun SearchScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onNavigateToDetail: (Int) -> Unit
 ) {
-    val subscriptions by viewModel.subscriptions.collectAsState()
+    val uiState by viewModel.subscriptionsState.collectAsState()
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var selectedFilter by rememberSaveable { mutableStateOf("All") }
+    val subscriptions = if (uiState is UiState.Success) (uiState as UiState.Success).data else emptyList()
     val filters = listOf("All") + subscriptions.map { it.walletName }.distinct().filter { it.isNotBlank() }.sorted()
 
     val filteredSubscriptions = subscriptions.filter { data ->
