@@ -18,12 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import java.util.Date
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.data.local.entity.WalletEntity
 import com.example.subz.ui.components.SubzAlertDialog
@@ -84,9 +86,21 @@ fun AddEditSubscriptionScreen(
         }
     }
 
+    val errNameReq = stringResource(id = R.string.err_name_required)
+    val errPriceReq = stringResource(id = R.string.err_price_required)
+    val errPriceNeg = stringResource(id = R.string.err_price_negative)
+    val errDateReq = stringResource(id = R.string.err_date_required)
+    val errWalletReq = stringResource(id = R.string.err_wallet_required)
+
+    val toastUpdated = stringResource(id = R.string.toast_sub_updated)
+    val toastSaved = stringResource(id = R.string.toast_sub_saved)
+
+    val deletedWalletName = walletToDelete?.name ?: ""
+    val toastDeletedWallet = stringResource(id = R.string.toast_deleted, deletedWalletName)
+
     val isEditMode = subscriptionId != null
-    val pageTitle = if (isEditMode) "Edit Subscription" else "New Subscription"
-    val buttonText = if (isEditMode) "Update Changes" else "Save Subscription"
+    val pageTitle = if (isEditMode) stringResource(id = R.string.edit_subscription) else stringResource(id = R.string.new_subscription)
+    val buttonText = if (isEditMode) stringResource(id = R.string.update_changes) else stringResource(id = R.string.save_subscription)
 
     Scaffold(
         topBar = {
@@ -108,8 +122,8 @@ fun AddEditSubscriptionScreen(
             SubzTextField(
                 value = name,
                 onValueChange = { name = it; nameError = null },
-                label = "Service name",
-                placeholder = "e.g., Netflix",
+                label = stringResource(id = R.string.service_name),
+                placeholder = stringResource(id = R.string.eg_netflix),
                 isError = nameError != null,
                 errorMessage = nameError
             )
@@ -117,8 +131,8 @@ fun AddEditSubscriptionScreen(
             SubzTextField(
                 value = price,
                 onValueChange = { price = it; priceError = null },
-                label = "Price (Rp)",
-                placeholder = "e.g., 50000",
+                label = stringResource(id = R.string.price_rp),
+                placeholder = stringResource(id = R.string.eg_price),
                 keyboardType = KeyboardType.Number,
                 isError = priceError != null,
                 errorMessage = priceError
@@ -126,7 +140,7 @@ fun AddEditSubscriptionScreen(
 
             SubzClickableField(
                 value = renewalDate,
-                label = "Renewal / Trial End",
+                label = stringResource(id = R.string.renewal_trial_end),
                 trailingIcon = Icons.Default.DateRange,
                 onClick = { showDatePicker = true; dateError = null },
                 isError = dateError != null,
@@ -135,7 +149,7 @@ fun AddEditSubscriptionScreen(
 
             SubzClickableField(
                 value = paymentMethodName,
-                label = "Payment Method",
+                label = stringResource(id = R.string.payment_method),
                 trailingIcon = Icons.Default.KeyboardArrowDown,
                 onClick = { showWalletSelector = true; walletError = null },
                 isError = walletError != null,
@@ -149,11 +163,11 @@ fun AddEditSubscriptionScreen(
                     val parsedPrice = price.toDoubleOrNull()
                     var hasError = false
 
-                    if (name.isBlank()) { nameError = "Service name is required"; hasError = true }
-                    if (price.isBlank() || parsedPrice == null) { priceError = "Valid price is required"; hasError = true }
-                    else if (parsedPrice < 0.0) { priceError = "Price cannot be negative"; hasError = true }
-                    if (renewalDate.isBlank()) { dateError = "Renewal date is required"; hasError = true }
-                    if (selectedWalletId == null) { walletError = "Payment method is required"; hasError = true }
+                    if (name.isBlank()) { nameError = errNameReq; hasError = true }
+                    if (price.isBlank() || parsedPrice == null) { priceError = errPriceReq; hasError = true }
+                    else if (parsedPrice < 0.0) { priceError = errPriceNeg; hasError = true }
+                    if (renewalDate.isBlank()) { dateError = errDateReq; hasError = true }
+                    if (selectedWalletId == null) { walletError = errWalletReq; hasError = true }
 
                     if (!hasError) {
                         if (isEditMode && subscriptionToEdit != null) {
@@ -165,7 +179,7 @@ fun AddEditSubscriptionScreen(
                                     walletId = selectedWalletId!!
                                 )
                             )
-                            Toast.makeText(context, "Subsctiption updated", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, toastUpdated, Toast.LENGTH_SHORT).show()
                         } else {
                             viewModel.addSubscription(
                                 name = name.trim(),
@@ -173,7 +187,7 @@ fun AddEditSubscriptionScreen(
                                 renewalDate = renewalDate.trim(),
                                 walletId = selectedWalletId!!
                             )
-                            Toast.makeText(context, "Subsctiption saved", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, toastSaved, Toast.LENGTH_SHORT).show()
                         }
                         onNavigateBack()
                     }
@@ -230,14 +244,14 @@ fun AddEditSubscriptionScreen(
 
         if (walletToDelete != null) {
             SubzAlertDialog(
-                title = "Delete Wallet",
-                message = "Are you sure you want to delete ${walletToDelete?.name}? WARNING: All subscriptions using this payment method will also be deleted permanently!",
-                confirmText = "Delete",
+                title = stringResource(id = R.string.delete_wallet_title),
+                message = stringResource(id = R.string.delete_wallet_msg, walletToDelete?.name ?: ""),
+                confirmText = stringResource(id = R.string.delete),
                 isDestructive = true,
                 onConfirm = {
                     walletToDelete?.let {
                         walletViewModel.deleteWallet(it)
-                        Toast.makeText(context, "${it.name} deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, toastDeletedWallet, Toast.LENGTH_SHORT).show()
                     }
                     walletToDelete = null
                     paymentMethodName = ""
@@ -267,14 +281,14 @@ private fun WalletSelectorSheet(
                 .fillMaxWidth()
                 .padding(bottom = 32.dp, start = 16.dp, end = 16.dp, top = 8.dp)
         ) { Text(
-            text = "Select Payment Method",
+            text = stringResource(id = R.string.select_payment_method),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = PrimaryBlue,
             modifier = Modifier.padding(bottom = 16.dp)
         )
             if (wallets.isEmpty()) {
-                Text("No wallets added yet.", color = Color.Gray, modifier = Modifier.padding(vertical = 16.dp))
+                Text(stringResource(id = R.string.no_wallets_added), color = Color.Gray, modifier = Modifier.padding(vertical = 16.dp))
             } else {
                 LazyColumn {
                     items(wallets) { wallet ->
@@ -304,7 +318,7 @@ private fun WalletSelectorSheet(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("+ Add New Wallet", color = PrimaryBlue)
+                Text(stringResource(id = R.string.add_new_wallet), color = PrimaryBlue)
             }
         }
     }
@@ -328,7 +342,7 @@ private fun AddWalletSheet(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Add New Wallet",
+                text = stringResource(id = R.string.add_new_wallet_title),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = PrimaryBlue
@@ -336,8 +350,8 @@ private fun AddWalletSheet(
             SubzTextField(
                 value = newWalletName,
                 onValueChange = { newWalletName = it },
-                label = "Wallet Name",
-                placeholder = "e.g., Jenius, Jago"
+                label = stringResource(id = R.string.wallet_name),
+                placeholder = stringResource(id = R.string.eg_wallet)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -345,11 +359,11 @@ private fun AddWalletSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel", color = TextDarkNavy)
+                    Text(stringResource(id = R.string.cancel), color = TextDarkNavy)
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 SubzButton(
-                    text = "Save",
+                    text = stringResource(id = R.string.save),
                     onClick = { if (newWalletName.isNotBlank()) onSave(newWalletName) },
                     modifier = Modifier.width(120.dp)
                 )

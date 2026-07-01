@@ -41,4 +41,43 @@
     <string name="logout_title">Log Out</string>
     <string name="logout_message">Are you sure you want to log out from your account?</string>
     <string name="error_message">Error: %1$s</string>
+
+    <string name="edit_subscription">Edit Subscription</string>
+    <string name="new_subscription">New Subscription</string>
+    <string name="update_changes">Update Changes</string>
+    <string name="save_subscription">Save Subscription</string>
+    <string name="service_name">Service name</string>
+    <string name="eg_netflix">e.g., Netflix</string>
+    <string name="price_rp">Price (Rp)</string>
+    <string name="eg_price">e.g., 50000</string>
+    <string name="renewal_trial_end">Renewal / Trial End</string>
+    <string name="payment_method">Payment Method</string>
+
+    <string name="err_name_required">Service name is required</string>
+    <string name="err_price_required">Valid price is required</string>
+    <string name="err_price_negative">Price cannot be negative</string>
+    <string name="err_date_required">Renewal date is required</string>
+    <string name="err_wallet_required">Payment method is required</string>
+
+    <string name="toast_sub_updated">Subscription updated</string>
+    <string name="toast_sub_saved">Subscription saved</string>
+    <string name="select_payment_method">Select Payment Method</string>
+    <string name="no_wallets_added">No wallets added yet.</string>
+    <string name="add_new_wallet">+ Add New Wallet</string>
+    <string name="add_new_wallet_title">Add New Wallet</string>
+    <string name="wallet_name">Wallet Name</string>
+    <string name="eg_wallet">e.g., Jenius, Jago</string>
+    <string name="delete_wallet_title">Delete Wallet</string>
+    <string name="delete_wallet_msg">Are you sure you want to delete %1$s? WARNING: All subscriptions using this payment method will also be deleted permanently!</string>
+    <string name="toast_deleted">%1$s deleted</string>
+
+    <string name="details">Details</string>
+    <string name="subscription_info">Subscription Info</string>
+    <string name="next_payment">Next Payment</string>
+    <string name="delete_sub_title">Delete Subscription</string>
+    <string name="delete_sub_msg">Are you sure you want to delete %1$s? This action cannot be undone.</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_profile">Profile</string>
 </resources>

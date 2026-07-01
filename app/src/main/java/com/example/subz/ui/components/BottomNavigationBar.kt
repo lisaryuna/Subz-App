@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.subz.R
 import com.example.subz.ui.navigation.Screen
 import com.example.subz.ui.theme.IndicatorLightBlue
 import com.example.subz.ui.theme.PrimaryBlue
@@ -30,9 +32,9 @@ data class BottomNavItem(
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem("Home", Screen.Home.route, Icons.Default.Home),
-        BottomNavItem("Search", Screen.Search.route, Icons.Default.Search),
-        BottomNavItem("Profile", Screen.Profile.route, Icons.Default.Person)
+        BottomNavItem(stringResource(id = R.string.nav_home), Screen.Home.route, Icons.Default.Home),
+        BottomNavItem(stringResource(id = R.string.nav_search), Screen.Search.route, Icons.Default.Search),
+        BottomNavItem(stringResource(id = R.string.nav_profile), Screen.Profile.route, Icons.Default.Person)
     )
 
     NavigationBar(

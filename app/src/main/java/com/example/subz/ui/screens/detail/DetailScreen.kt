@@ -23,10 +23,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.subz.R
 import com.example.subz.ui.components.SubzAlertDialog
 import com.example.subz.ui.components.SubzTopAppBar
 import com.example.subz.ui.components.getServiceIcon
@@ -52,7 +54,7 @@ fun DetailScreen(
     Scaffold(
         topBar = {
             SubzTopAppBar(
-                title = "Details",
+                title = stringResource(id = R.string.details),
                 canNavigateBack = true,
                 navigateUp = onNavigateBack
             )
@@ -137,7 +139,7 @@ fun DetailScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = "Subscription Info",
+                            text = stringResource(id = R.string.subscription_info),
                             color = PrimaryBlue,
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp,
@@ -147,7 +149,7 @@ fun DetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Next Payment", color = Color.Gray)
+                            Text(stringResource(id = R.string.next_payment), color = Color.Gray)
                             Text(DateFormatter.formatForUI(sub.renewalDate), fontWeight = FontWeight.Medium)
                         }
                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.3f))
@@ -155,7 +157,7 @@ fun DetailScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("Payment Method", color = Color.Gray)
+                            Text(stringResource(id = R.string.payment_method), color = Color.Gray)
                             Text(paymentMethodName, fontWeight = FontWeight.Medium)
                         }
                     }
@@ -173,7 +175,7 @@ fun DetailScreen(
                     ) {
                         Icon(Icons.Default.Edit, contentDescription = "Edit", modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Edit")
+                        Text(stringResource(id = R.string.edit))
                     }
 
                     Button(
@@ -184,21 +186,21 @@ fun DetailScreen(
                     ) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete", modifier = Modifier.size(18.dp))
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Delete")
+                        Text(stringResource(id = R.string.delete))
                     }
                 }
             }
 
             if (showDeleteDialog) {
                 SubzAlertDialog(
-                    title = "Delete Subscription",
-                    message = "Are you sure you want to delete ${sub.name}? This action cannot be undone.",
-                    confirmText = "Delete",
+                    title = stringResource(id = R.string.delete_sub_title),
+                    message = stringResource(id = R.string.delete_sub_msg, sub.name),
+                    confirmText = stringResource(id = R.string.delete),
                     isDestructive = true,
                     onConfirm = {
                         viewModel.deleteSubscription(sub)
                         showDeleteDialog = false
-                        Toast.makeText(context, "${sub.name} deleted", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, context.getString(R.string.toast_deleted, sub.name), Toast.LENGTH_SHORT).show()
                         onNavigateBack()
                     },
                     onDismiss = { showDeleteDialog = false }
