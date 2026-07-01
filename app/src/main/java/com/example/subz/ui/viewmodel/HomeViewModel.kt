@@ -17,6 +17,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed interface UiState<out T> {
+    object Loading : UiState<Nothing>
+    data class Success<T>(val data: T) : UiState<T>
+    data class Error(val message: String) : UiState<Nothing>
+}
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val subscriptionRepository: SubscriptionRepository,
@@ -24,12 +29,13 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val currentUserId = auth.currentUser?.uid ?: ""
-    val subscriptions: StateFlow<List<SubWithWallet>> =
+    val subscriptionsState: StateFlow<UiState<List<SubWithWallet>>> =
         subscriptionRepository.getAllSubscriptions(currentUserId)
+            .map { UiState.Success(it) as UiState<List<SubWithWallet>> }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
+                initialValue = UiState.Loading
             )
 
     val totalActivePrice: StateFlow<Double> =
