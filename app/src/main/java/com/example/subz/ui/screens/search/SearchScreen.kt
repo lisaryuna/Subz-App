@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,8 +34,8 @@ fun SearchScreen(
     onNavigateToDetail: (Int) -> Unit
 ) {
     val subscriptions by viewModel.subscriptions.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedFilter by remember { mutableStateOf("All") }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var selectedFilter by rememberSaveable { mutableStateOf("All") }
     val filters = listOf("All") + subscriptions.map { it.walletName }.distinct().filter { it.isNotBlank() }.sorted()
 
     val filteredSubscriptions = subscriptions.filter { data ->
