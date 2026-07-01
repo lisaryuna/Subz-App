@@ -3,7 +3,9 @@ package com.example.subz.ui.screens.detail
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -67,6 +69,7 @@ fun DetailScreen(
                     .padding(innerPadding)
                     .padding(16.dp)
                     .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
