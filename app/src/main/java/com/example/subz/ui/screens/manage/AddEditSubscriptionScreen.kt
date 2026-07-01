@@ -1,5 +1,6 @@
 package com.example.subz.ui.screens.manage
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import java.util.Date
@@ -67,6 +69,7 @@ fun AddEditSubscriptionScreen(
     var showWalletSelector by remember { mutableStateOf(false) }
     var showAddWalletDialog by remember { mutableStateOf(false) }
     var walletToDelete by remember { mutableStateOf<WalletEntity?>(null) }
+    val context = LocalContext.current
 
     LaunchedEffect(subscriptionToEdit) {
         subscriptionToEdit?.let { data ->
@@ -161,6 +164,7 @@ fun AddEditSubscriptionScreen(
                                     walletId = selectedWalletId!!
                                 )
                             )
+                            Toast.makeText(context, "Subsctiption updated", Toast.LENGTH_SHORT).show()
                         } else {
                             viewModel.addSubscription(
                                 name = name.trim(),
@@ -168,6 +172,7 @@ fun AddEditSubscriptionScreen(
                                 renewalDate = renewalDate.trim(),
                                 walletId = selectedWalletId!!
                             )
+                            Toast.makeText(context, "Subsctiption saved", Toast.LENGTH_SHORT).show()
                         }
                         onNavigateBack()
                     }
@@ -229,7 +234,10 @@ fun AddEditSubscriptionScreen(
                 confirmText = "Delete",
                 isDestructive = true,
                 onConfirm = {
-                    walletToDelete?.let { walletViewModel.deleteWallet(it) }
+                    walletToDelete?.let {
+                        walletViewModel.deleteWallet(it)
+                        Toast.makeText(context, "${it.name} deleted", Toast.LENGTH_SHORT).show()
+                    }
                     walletToDelete = null
                     paymentMethodName = ""
                     selectedWalletId = null

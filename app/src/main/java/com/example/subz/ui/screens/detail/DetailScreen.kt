@@ -1,5 +1,6 @@
 package com.example.subz.ui.screens.detail
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,6 +47,7 @@ fun DetailScreen(
 ) {
     val subscriptionData by viewModel.getSubscriptionById(subscriptionId).collectAsState(initial = null)
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -195,6 +198,7 @@ fun DetailScreen(
                     onConfirm = {
                         viewModel.deleteSubscription(sub)
                         showDeleteDialog = false
+                        Toast.makeText(context, "${sub.name} deleted", Toast.LENGTH_SHORT).show()
                         onNavigateBack()
                     },
                     onDismiss = { showDeleteDialog = false }
