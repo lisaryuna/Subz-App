@@ -24,7 +24,9 @@ fun SubzTextField(
     label: String,
     placeholder: String = "",
     leadingIcon: ImageVector? = null,
-    keyboardType: KeyboardType = KeyboardType.Text
+    keyboardType: KeyboardType = KeyboardType.Text,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     OutlinedTextField(
         value = value,
@@ -37,7 +39,13 @@ fun SubzTextField(
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        singleLine = true
+        singleLine = true,
+        isError = isError,
+        supportingText = {
+            if (isError && errorMessage != null) {
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            }
+        }
     )
 }
 
@@ -46,7 +54,9 @@ fun SubzPasswordField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = "Password",
-    leadingIcon: ImageVector
+    leadingIcon: ImageVector,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -65,7 +75,13 @@ fun SubzPasswordField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        singleLine = true
+        singleLine = true,
+        isError = isError,
+        supportingText = {
+            if (isError && errorMessage != null) {
+                Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+            }
+        }
     )
 }
 
@@ -74,7 +90,9 @@ fun SubzClickableField(
     value: String,
     label: String,
     trailingIcon: ImageVector,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isError: Boolean = false,
+    errorMessage: String? = null
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(
@@ -91,7 +109,13 @@ fun SubzClickableField(
                 .fillMaxWidth()
                 .clickable { onClick() },
             shape = RoundedCornerShape(12.dp),
-            singleLine = true
+            singleLine = true,
+            isError = isError,
+            supportingText = {
+                if (isError && errorMessage != null) {
+                    Text(text = errorMessage, color = MaterialTheme.colorScheme.error)
+                }
+            }
         )
         Box(
             modifier = Modifier

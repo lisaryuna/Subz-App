@@ -31,7 +31,6 @@ import com.example.subz.ui.components.SubzButton
 import com.example.subz.ui.components.SubzClickableField
 import com.example.subz.ui.components.SubzTextField
 import com.example.subz.ui.components.SubzTopAppBar
-import com.example.subz.ui.theme.DangerRed
 import com.example.subz.ui.theme.PrimaryBlue
 import com.example.subz.ui.theme.TextDarkNavy
 import com.example.subz.ui.viewmodel.HomeViewModel
@@ -62,7 +61,10 @@ fun AddEditSubscriptionScreen(
 
     var selectedWalletId by remember { mutableStateOf<Int?>(null) }
     var paymentMethodName by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var nameError by remember { mutableStateOf<String?>(null) }
+    var priceError by remember { mutableStateOf<String?>(null) }
+    var dateError by remember { mutableStateOf<String?>(null) }
+    var walletError by remember { mutableStateOf<String?>(null) }
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -105,61 +107,60 @@ fun AddEditSubscriptionScreen(
         ) {
             SubzTextField(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = { name = it; nameError = null },
                 label = "Service name",
-                placeholder = "e.g., Netflix"
+                placeholder = "e.g., Netflix",
+                isError = nameError != null,
+                errorMessage = nameError
             )
 
             SubzTextField(
                 value = price,
-                onValueChange = { price = it },
+                onValueChange = { price = it; priceError = null },
                 label = "Price (Rp)",
                 placeholder = "e.g., 50000",
                 keyboardType = KeyboardType.Number,
+                isError = priceError != null,
+                errorMessage = priceError
             )
 
             SubzClickableField(
                 value = renewalDate,
                 label = "Renewal / Trial End",
                 trailingIcon = Icons.Default.DateRange,
-                onClick = { showDatePicker = true }
+                onClick = { showDatePicker = true; dateError = null },
+                isError = dateError != null,
+                errorMessage = dateError
             )
 
             SubzClickableField(
                 value = paymentMethodName,
                 label = "Payment Method",
                 trailingIcon = Icons.Default.KeyboardArrowDown,
-                onClick = { showWalletSelector = true }
+                onClick = { showWalletSelector = true; walletError = null },
+                isError = walletError != null,
+                errorMessage = walletError
             )
             Spacer(modifier = Modifier.weight(1f))
-
-            if (errorMessage != null) {
-                Text(
-                    text = errorMessage!!,
-                    color = DangerRed,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
 
             SubzButton(
                 text = buttonText,
                 onClick = {
                     val parsedPrice = price.toDoubleOrNull()
+                    var hasError = false
 
-                    if (name.isBlank() || price.isBlank() || renewalDate.isBlank() || selectedWalletId == null) {
-                        errorMessage = "All fields are required"
-                    }
-                    else if (parsedPrice == null || parsedPrice < 0.0) {
-                        errorMessage = "Price cannot be negative"
-                    }
-                    else {
-                        errorMessage = null
+                    if (name.isBlank()) { nameError = "Service name is required"; hasError = true }
+                    if (price.isBlank() || parsedPrice == null) { priceError = "Valid price is required"; hasError = true }
+                    else if (parsedPrice < 0.0) { priceError = "Price cannot be negative"; hasError = true }
+                    if (renewalDate.isBlank()) { dateError = "Renewal date is required"; hasError = true }
+                    if (selectedWalletId == null) { walletError = "Payment method is required"; hasError = true }
+
+                    if (!hasError) {
                         if (isEditMode && subscriptionToEdit != null) {
                             viewModel.updateSubscription(
                                 subscriptionToEdit!!.subscription.copy(
                                     name = name.trim(),
-                                    price = parsedPrice,
+                                    price = parsedPrice!!,
                                     renewalDate = renewalDate.trim(),
                                     walletId = selectedWalletId!!
                                 )
@@ -168,7 +169,7 @@ fun AddEditSubscriptionScreen(
                         } else {
                             viewModel.addSubscription(
                                 name = name.trim(),
-                                price = parsedPrice,
+                                price = parsedPrice!!,
                                 renewalDate = renewalDate.trim(),
                                 walletId = selectedWalletId!!
                             )
