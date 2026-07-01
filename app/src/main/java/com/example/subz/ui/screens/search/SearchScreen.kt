@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
@@ -42,6 +43,9 @@ fun SearchScreen(
         matchesSearch && matchesFilter
     }
 
+    val filterState = rememberLazyListState()
+    val resultState = rememberLazyListState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,6 +72,7 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
         LazyRow(
+            state = filterState,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -103,6 +108,7 @@ fun SearchScreen(
             SubzEmptyState(message = "No subscriptions found.")
         } else {
             LazyColumn(
+                state = resultState,
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 contentPadding = PaddingValues(bottom = 80.dp)
