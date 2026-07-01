@@ -1,5 +1,6 @@
 package com.example.subz.ui.viewmodel
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.subz.data.local.AppDatabase
@@ -39,6 +40,15 @@ class AuthViewModel @Inject constructor(
             return
         }
 
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _authState.value = AuthState.Error("Invalid email format")
+            return
+        }
+        if (password.length < 6) {
+            _authState.value = AuthState.Error("Password must be at least 6 characters")
+            return
+        }
+
         _authState.value = AuthState.Loading
         viewModelScope.launch {
             auth.createUserWithEmailAndPassword(email, password)
@@ -62,6 +72,11 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, password: String) {
         if (email.isBlank() || password.isBlank()) {
             _authState.value = AuthState.Error("Email and password must be filled")
+            return
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _authState.value = AuthState.Error("Invalid email format")
             return
         }
 
