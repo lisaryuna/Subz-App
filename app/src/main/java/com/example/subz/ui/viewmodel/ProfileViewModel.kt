@@ -4,25 +4,18 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.subz.data.repository.CloudSyncRepository
 import com.example.subz.worker.BillReminderWorker
+import com.example.subz.worker.ReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Calendar.DAY_OF_YEAR
-import java.util.Calendar.HOUR_OF_DAY
-import java.util.Calendar.MILLISECOND
-import java.util.Calendar.MINUTE
-import java.util.Calendar.SECOND
-import java.util.Calendar.getInstance
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -57,40 +50,9 @@ class ProfileViewModel @Inject constructor(
         prefs.edit { putBoolean("reminder_enabled", enabled)}
         _isReminderEnabled.value = enabled
 
-        val workManager = WorkManager.getInstance(context)
-        if (enabled) {
-            val delay = calculateInitialDelayTo8AM()
-            val reminderRequest = PeriodicWorkRequestBuilder<BillReminderWorker>(
-                24, TimeUnit.HOURS
-            )
-                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .build()
-            workManager.enqueueUniquePeriodicWork(
-                "SubzBillReminderWork",
-                ExistingPeriodicWorkPolicy.KEEP,
-                reminderRequest
-            )
-        } else {
-            workManager.cancelUniqueWork("SubzBillReminderWork")
-        }
+        ReminderManager.scheduleOrCancelReminder(context, enabled)
     }
 
-    private fun calculateInitialDelayTo8AM(): Long {
-        val currentTime = System.currentTimeMillis()
-        val calendar = getInstance().apply {
-            timeInMillis = currentTime
-            set(HOUR_OF_DAY, 8)
-            set(MINUTE, 0)
-            set(SECOND, 0)
-            set(MILLISECOND, 0)
-        }
-
-        if (calendar.timeInMillis <= currentTime) {
-            calendar.add(DAY_OF_YEAR, 1)
-        }
-
-        return calendar.timeInMillis - currentTime
-    }
 
     fun triggerDemoReminder() {
         val workManager = WorkManager.getInstance(context)
