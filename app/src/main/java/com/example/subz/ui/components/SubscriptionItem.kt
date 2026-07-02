@@ -27,32 +27,37 @@ import com.example.subz.data.local.dao.SubWithWallet
 import com.example.subz.utils.CurrencyFormatter
 import com.example.subz.utils.DateFormatter
 
+private val serviceIconMap = mapOf(
+    "apple" to R.drawable.ic_apple_music,
+    "canva" to R.drawable.ic_canva,
+    "capcut" to R.drawable.ic_capcut,
+    "chatgpt" to R.drawable.ic_chatgpt,
+    "openai" to R.drawable.ic_chatgpt,
+    "discord" to R.drawable.ic_discord,
+    "disney" to R.drawable.ic_disney,
+    "hotstar" to R.drawable.ic_disney,
+    "duolingo" to R.drawable.ic_duolingo,
+    "icloud" to R.drawable.ic_icloud,
+    "joox" to R.drawable.ic_joox,
+    "microsoft" to R.drawable.ic_microsoft365,
+    "office" to R.drawable.ic_microsoft365,
+    "netflix" to R.drawable.ic_netflix,
+    "notion" to R.drawable.ic_notion,
+    "prime" to R.drawable.ic_prime,
+    "spotify" to R.drawable.ic_spotify,
+    "steam" to R.drawable.ic_steam,
+    "vidio" to R.drawable.ic_vidio,
+    "viu" to R.drawable.ic_viu,
+    "wetv" to R.drawable.ic_wetv,
+    "youtube" to R.drawable.ic_youtube,
+    "zoom" to R.drawable.ic_zoom
+)
 
 fun getServiceIcon(name: String): Int? {
     val lowerName = name.lowercase()
-    return when {
-        lowerName.contains("apple") -> R.drawable.ic_apple_music
-        lowerName.contains("canva") -> R.drawable.ic_canva
-        lowerName.contains("capcut") -> R.drawable.ic_capcut
-        lowerName.contains("chatgpt") || lowerName.contains("openai") -> R.drawable.ic_chatgpt
-        lowerName.contains("discord") -> R.drawable.ic_discord
-        lowerName.contains("disney") || lowerName.contains("hotstar") -> R.drawable.ic_disney
-        lowerName.contains("duolingo") -> R.drawable.ic_duolingo
-        lowerName.contains("icloud") -> R.drawable.ic_icloud
-        lowerName.contains("joox") -> R.drawable.ic_joox
-        lowerName.contains("microsoft") || lowerName.contains("office") -> R.drawable.ic_microsoft365
-        lowerName.contains("netflix") -> R.drawable.ic_netflix
-        lowerName.contains("notion") -> R.drawable.ic_notion
-        lowerName.contains("prime") -> R.drawable.ic_prime
-        lowerName.contains("spotify") -> R.drawable.ic_spotify
-        lowerName.contains("steam") -> R.drawable.ic_steam
-        lowerName.contains("vidio") -> R.drawable.ic_vidio
-        lowerName.contains("viu") -> R.drawable.ic_viu
-        lowerName.contains("wetv") -> R.drawable.ic_wetv
-        lowerName.contains("youtube") -> R.drawable.ic_youtube
-        lowerName.contains("zoom") -> R.drawable.ic_zoom
-        else -> null
-    }
+    return serviceIconMap.entries.firstOrNull { (keyword, _) ->
+        lowerName.contains(keyword)
+    }?.value
 }
 
 @Composable
