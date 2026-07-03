@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Cloud
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Notifications
@@ -136,20 +135,6 @@ fun ProfileScreen(
                                     uncheckedTrackColor = Color.LightGray
                                 )
                             )
-                        }
-                    )
-                    HorizontalDivider(color = BackgroundLight)
-
-                    SettingsRow(
-                        icon = Icons.Default.PlayArrow,
-                        title = stringResource(id = R.string.notification_simulation),
-                        subtitle = stringResource(id = R.string.trigger_reminder_desc),
-                        content = {
-                            TextButton(
-                                onClick = { profileViewModel.triggerDemoReminder() }
-                            ) {
-                                Text(stringResource(id = R.string.start), color = PrimaryBlue, fontWeight = FontWeight.Bold)
-                            }
                         }
                     )
                     HorizontalDivider(color = BackgroundLight)

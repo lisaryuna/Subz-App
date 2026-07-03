@@ -4,11 +4,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.example.subz.data.repository.CloudSyncRepository
-import com.example.subz.worker.BillReminderWorker
 import com.example.subz.worker.ReminderManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -16,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,20 +46,6 @@ class ProfileViewModel @Inject constructor(
         _isReminderEnabled.value = enabled
 
         ReminderManager.scheduleOrCancelReminder(context, enabled)
-    }
-
-
-    fun triggerDemoReminder() {
-        val workManager = WorkManager.getInstance(context)
-        val demoRequest = OneTimeWorkRequestBuilder<BillReminderWorker>()
-            .setInitialDelay(3, TimeUnit.SECONDS)
-            .build()
-
-        workManager.enqueueUniqueWork(
-            "DemoSubzWork",
-            ExistingWorkPolicy.REPLACE,
-            demoRequest
-        )
     }
 
     private fun performManualSync() {
