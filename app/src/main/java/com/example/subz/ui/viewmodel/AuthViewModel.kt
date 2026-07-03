@@ -53,18 +53,18 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    val profileUpdates = userProfileChangeRequest {
-                        displayName = fullName
+                    if (task.isSuccessful) {
+                        val user = auth.currentUser
+                        val profileUpdates = userProfileChangeRequest {
+                            displayName = fullName
+                        }
+                        user?.updateProfile(profileUpdates)?.addOnCompleteListener {
+                            _authState.value = AuthState.Success(auth.currentUser)
+                        }
+                    } else {
+                        val errorMessage = task.exception?.localizedMessage ?: "Registration Failed"
+                        _authState.value = AuthState.Error(errorMessage)
                     }
-                    user?.updateProfile(profileUpdates)?.addOnCompleteListener {
-                        _authState.value = AuthState.Success(auth.currentUser)
-                    }
-                } else {
-                    val errorMessage = task.exception?.localizedMessage ?: "Registration Failed"
-                    _authState.value = AuthState.Error(errorMessage)
-                }
                 }
         }
     }
