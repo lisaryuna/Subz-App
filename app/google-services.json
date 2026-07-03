@@ -8,35 +8,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:497177058482:android:94a94826f45a053a3fbdab",
-        "android_client_info": {
-          "package_name": "com.example.subz"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "497177058482-ng7ddt4hbrsb5m6qbfprbivu120ub470.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA048AJY-3tZyW1hgECQtdmvE-yzhlmmlc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "497177058482-ng7ddt4hbrsb5m6qbfprbivu120ub470.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:497177058482:android:85b5210884539a0e3fbdab",
         "android_client_info": {
           "package_name": "com.lisa.subz"
@@ -44,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "497177058482-ng7ddt4hbrsb5m6qbfprbivu120ub470.apps.googleusercontent.com",
+          "client_id": "497177058482-i810jh5t9r67hv897bqpl4dufaucbsli.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lisa.subz",
+            "certificate_hash": "b71dba68c2a3bb41bc399a89f5a8630b1383e7e7"
+          }
+        },
+        {
+          "client_id": "497177058482-j17hqv85rpq3o3aiiekm6tl21okjn2co.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -57,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "497177058482-ng7ddt4hbrsb5m6qbfprbivu120ub470.apps.googleusercontent.com",
+              "client_id": "497177058482-j17hqv85rpq3o3aiiekm6tl21okjn2co.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
