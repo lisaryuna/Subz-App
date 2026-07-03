@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.subz"
+        applicationId = "com.lisa.subz"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
